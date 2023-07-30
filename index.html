@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="main">
+
+    </canvas>
+</body>
+<script>
+    let movingLeft = false;
+    let movingRight = false;
+    let movingUp = false;
+    let movingDown = false;
+
+    const mainCanvas = document.getElementById("main");
+
+    mainCanvas.width = window.innerWidth;
+    mainCanvas.height = window.innerHeight - 4;
+
+    const context = mainCanvas.getContext("2d");
+
+    const webSocket = new WebSocket("ws://localhost:13200");
+
+    webSocket.addEventListener("open", () => {
+      webSocket.send(JSON.stringify({
+        type: 'CREATE_ROOM',
+      }));
+    });
+
+    webSocket.addEventListener("message", (event) => {
+        //context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
+        context.fillStyle = "rgba(0, 0, 255)";
+        context.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
+        const { x, y } = JSON.parse(event.data);
+
+        context.beginPath();
+        context.fillStyle = "rgba(200, 0, 0)";
+        context.arc(x, y, 32, 0, 2 * Math.PI);
+        context.fill();
+    });
+
+    document.addEventListener("keydown", (event) => {
+        velocityX = 0;
+        velocityY = 0;
+
+        if (event.key === "s") {
+          movingDown = true;
+        }
+        else if (event.key === "w") {
+          movingUp = true;
+        }
+
+        if (event.key === "d") {
+          movingRight = true;
+        }
+        else if (event.key === "a") {
+          movingLeft = true;
+        }
+    });
+
+    document.addEventListener("keyup", (event) => {
+        if (event.key === "s") {
+          movingDown = false;
+        }
+
+        if (event.key === "w") {
+          movingUp = false;
+        }
+
+        if (event.key === "d") {
+          movingRight = false;
+        }
+
+        if (event.key === "a") {
+          movingLeft = false;
+        }
+    });
+
+    setInterval(() => {
+          webSocket.send(JSON.stringify({
+              type: 'PLAYER_MOVE',
+              movingUp,
+              movingDown,
+              movingLeft,
+              movingRight,
+          }));
+    }, 16);
+</script>
+</html>
