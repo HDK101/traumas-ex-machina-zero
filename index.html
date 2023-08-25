@@ -21,6 +21,8 @@
     let movingRight = false;
     let movingUp = false;
     let movingDown = false;
+    
+    let shooting = false;
 
     const mainCanvas = document.getElementById("main");
 
@@ -41,12 +43,29 @@
         //context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
         context.fillStyle = "rgba(0, 0, 255)";
         context.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
-        const { x, y } = JSON.parse(event.data);
+        const { x, y, projectiles } = JSON.parse(event.data);
+
+        if (projectiles) {
+          projectiles.forEach(p => {
+            context.beginPath();
+            context.fillStyle = "rgba(255, 255, 255)";
+            context.arc(p.x, p.x, 8, 0, 2 * Math.PI);
+            context.fill();
+          });
+        }
 
         context.beginPath();
         context.fillStyle = "rgba(200, 0, 0)";
         context.arc(x, y, 32, 0, 2 * Math.PI);
         context.fill();
+    });
+
+    document.addEventListener("mousedown" (event) => {
+      shooting = true;
+    });
+
+    document.addEventListener("mouseup" (event) => {
+      shooting = false;
     });
 
     document.addEventListener("keydown", (event) => {
@@ -93,6 +112,7 @@
               movingDown,
               movingLeft,
               movingRight,
+              shooting,
           }));
     }, 16);
 </script>

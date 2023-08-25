@@ -49,20 +49,7 @@ export default class Server {
   }
 
   tick() {
-    this.rooms.forEach((room) => {
-      room.forEachPlayer(playerConnection => {
-        const player = playerConnection.player;
-        const socket = playerConnection.socket;
-
-        player.x += player.velocityX * (1/60);
-        player.y += player.velocityY * (1/60);
-
-        socket.send(JSON.stringify({
-          x: player.x,
-          y: player.y,
-        }));
-      });
-    });
+    this.rooms.forEach((room) => room.tick(1 / this.ticksPerSecond));
   }
 
   process() {
