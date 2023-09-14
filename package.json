@@ -7,7 +7,7 @@
   "scripts": {
     "build": "swc ./src -d dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "web:client": "serve index.html"
+    "web:client": "serve ."
   },
   "keywords": [],
   "author": "",

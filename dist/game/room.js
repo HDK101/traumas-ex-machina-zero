@@ -44,25 +44,51 @@ export class Room {
             player.x += player.velocityX * deltaTime;
             player.y += player.velocityY * deltaTime;
             socket.send(JSON.stringify({
+                players: this.getPlayers(),
                 x: player.x,
                 y: player.y,
                 projectiles: projectilesList
             }));
         });
     }
-    constructor(){
-        _define_property(this, "players", new Map());
-        _define_property(this, "currentProjectileId", 0);
-        _define_property(this, "projectiles", new Map());
-        _define_property(this, "currentTime", 0);
+    formatted() {
+        return {
+            id: this.id,
+            players: this.getPlayers()
+        };
+    }
+    getPlayers() {
+        const retrievedPlayers = [];
+        this.players.forEach((playerConnection)=>retrievedPlayers.push(playerConnection.player));
+        return retrievedPlayers;
+    }
+    constructor(id){
+        _define_property(this, "id", void 0);
+        _define_property(this, "players", void 0);
+        _define_property(this, "currentProjectileId", void 0);
+        _define_property(this, "projectiles", void 0);
+        _define_property(this, "currentTime", void 0);
+        this.id = id;
+        this.players = new Map();
+        this.currentProjectileId = 0;
+        this.projectiles = new Map();
+        this.currentTime = 0;
     }
 }
 export class Rooms {
     create() {
-        this.currentRoomId += 1;
-        const room = new Room();
+        const room = new Room(this.currentRoomId);
         this.rooms.set(this.currentRoomId, room);
+        this.currentRoomId += 1;
         return room;
+    }
+    retrieve(id) {
+        return this.rooms.get(id);
+    }
+    retrieveAll() {
+        const roomList = [];
+        this.rooms.forEach((room)=>roomList.push(room));
+        return roomList;
     }
     forEach(fn) {
         this.rooms.forEach(fn);

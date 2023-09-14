@@ -4,29 +4,29 @@ import {MessageHandler} from "./MessageHandler.js";
 
 function playerMove(webSocketClientHandler: WebSocketClientHandler) {
   return (playerMessage: PlayerMessage) => {
-    const { playerConnection } = webSocketClientHandler;
+    const { player } = webSocketClientHandler;
 
     const velocity = 100;
     let velocityX = 0;
     let velocityY = 0;
     
     if (webSocketClientHandler.playerConnection) {
-      if (playerMessage.movingLeft) {
+      if (playerMessage.moving?.left) {
         velocityX -= velocity;
       }
-      if (playerMessage.movingRight) {
+      if (playerMessage.moving?.right) {
         velocityX += velocity;
       }
 
-      if (playerMessage.movingUp) {
+      if (playerMessage.moving?.up) {
         velocityY -= velocity;
       }
-      if (playerMessage.movingDown) {
+      if (playerMessage.moving?.down) {
         velocityY += velocity;
       }
 
-      playerConnection.player.velocityX = velocityX;
-      playerConnection.player.velocityY = velocityY;
+      player.velocityX = velocityX;
+      player.velocityY = velocityY;
     }
   }
 }

@@ -1,4 +1,4 @@
-import { PlayerConnection } from "./types.js";
+import { PlayerConnection, Player } from "./types.js";
 
 interface Projectile {
   x: number;
@@ -11,6 +11,8 @@ export class Room {
   private projectiles: Map<number, Projectile> = new Map();
 
   private currentTime = 0;
+
+  constructor(public readonly id: number) {}
 
   public addPlayer(playerConnection: PlayerConnection): void {
     this.players.set(playerConnection.player.id, playerConnection);
@@ -56,11 +58,25 @@ export class Room {
       player.y += player.velocityY * deltaTime;
 
       socket.send(JSON.stringify({
+        players: this.getPlayers(),
         x: player.x,
         y: player.y,
         projectiles: projectilesList,
       }));
     });
+  }
+
+  public formatted() {
+    return {
+      id: this.id,
+      players: this.getPlayers(),
+    };
+  }
+
+  private getPlayers(): Player[] {
+    const retrievedPlayers : Player[] = [];
+    this.players.forEach(playerConnection => retrievedPlayers.push(playerConnection.player));
+    return retrievedPlayers;
   }
 }
 
@@ -73,13 +89,25 @@ export class Rooms {
   }
 
   create(): Room {
-    this.currentRoomId += 1;
-
-    const room: Room = new Room();
+    const room: Room = new Room(this.currentRoomId);
 
     this.rooms.set(this.currentRoomId, room);
 
+    this.currentRoomId += 1;
+
     return room;
+  }
+
+  retrieve(id: number): Room | undefined {
+    return this.rooms.get(id);
+  }
+
+  retrieveAll(): Room[] {
+    const roomList: Room[] = [];
+
+    this.rooms.forEach(room => roomList.push(room));
+
+    return roomList;
   }
 
   forEach(fn: (room: Room) => void) {

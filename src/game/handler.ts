@@ -10,10 +10,9 @@ export default class WebSocketClientHandler {
   private inRoom?: Room | null;
   private handlers: Map<string, HandlerFunction> = new Map();
 
-  constructor(
-    private readonly playerId: number, 
+  constructor( private readonly playerId: number, 
     private readonly webSocket: WebSocket, 
-    private readonly rooms: Rooms
+    public readonly rooms: Rooms
   ) {
     this.rooms = rooms;
     this.webSocket = webSocket;
@@ -45,14 +44,18 @@ export default class WebSocketClientHandler {
         thisHandler.inRoom = thisHandler.rooms.create();
         thisHandler.inRoom.addPlayer(thisHandler.playerConnection);
       }
-      else {
-        const handlerFunction = thisHandler.handlers.get(playerMessage.type);
+      else { const handlerFunction = thisHandler.handlers.get(playerMessage.type);
         if (handlerFunction) handlerFunction(playerMessage);
       }
     });
     webSocket.on("close", () => {
       thisHandler.inRoom?.removePlayer(thisHandler.playerId);
     });
+  }
+
+  public enterRoomById(id: number) {
+    this.inRoom = this.rooms.retrieve(id);
+    this.inRoom?.addPlayer(this.playerConnection);
   }
 
   public getCurrentRoom() {

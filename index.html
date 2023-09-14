@@ -35,7 +35,8 @@
 
     webSocket.addEventListener("open", () => {
       webSocket.send(JSON.stringify({
-        type: 'CREATE_ROOM',
+        // type: 'CREATE_ROOM',
+        type: 'JOIN_ROOM',
       }));
     });
 
@@ -43,7 +44,9 @@
         //context.clearRect(0, 0, mainCanvas.width, mainCanvas.height);
         context.fillStyle = "rgba(0, 0, 255)";
         context.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
-        const { x, y, projectiles } = JSON.parse(event.data);
+        const { x, y, projectiles, players } = JSON.parse(event.data);
+
+        console.log(players);
 
         if (projectiles) {
           projectiles.forEach(p => {
@@ -54,17 +57,21 @@
           });
         }
 
-        context.beginPath();
-        context.fillStyle = "rgba(200, 0, 0)";
-        context.arc(x, y, 32, 0, 2 * Math.PI);
-        context.fill();
+        if (players) {
+          players.forEach(p => {
+            context.beginPath();
+            context.fillStyle = "rgba(200, 0, 0)";
+            context.arc(p.x, p.y, 32, 0, 2 * Math.PI);
+            context.fill();
+          });
+        }
     });
 
-    document.addEventListener("mousedown" (event) => {
+    document.addEventListener("mousedown", (event) => {
       shooting = true;
     });
 
-    document.addEventListener("mouseup" (event) => {
+    document.addEventListener("mouseup", (event) => {
       shooting = false;
     });
 

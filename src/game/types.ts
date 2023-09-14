@@ -14,9 +14,12 @@ export interface PlayerConnection {
 }
 
 export interface PlayerMessage {
-  type: 'PLAYER_MOVE' | 'CREATE_ROOM';
-  movingUp: boolean;
-  movingDown: boolean;
-  movingLeft: boolean;
-  movingRight: boolean;
+  type: 'PLAYER_MOVE' | 'CREATE_ROOM' | 'JOIN_ROOM' | 'LIST_ROOMS';
+  moving?: {
+    up: boolean;
+    down: boolean;
+    left: boolean;
+    right: boolean;
+  };
+  roomId: number;
 }

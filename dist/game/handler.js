@@ -13,6 +13,10 @@ function _define_property(obj, key, value) {
 }
 import * as rawHandlers from "./handler/messageHandler/index.js";
 class WebSocketClientHandler {
+    enterRoomById(id) {
+        this.inRoom = this.rooms.retrieve(id);
+        this.inRoom?.addPlayer(this.playerConnection);
+    }
     getCurrentRoom() {
         return this.inRoom;
     }
