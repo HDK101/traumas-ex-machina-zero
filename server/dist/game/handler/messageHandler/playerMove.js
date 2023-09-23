@@ -17,8 +17,8 @@ function playerMove(webSocketClientHandler) {
             if (playerMessage.moving?.down) {
                 velocityY += velocity;
             }
-            player.velocityX = velocityX;
-            player.velocityY = velocityY;
+            player.velocity.x = velocityX;
+            player.velocity.y = velocityY;
         }
     };
 }

@@ -1,11 +1,26 @@
 import WebSocket from "ws";
+import Vector2, {Vector2Object} from "./vector2.js";
 
-export interface Player {
+export class Player {
   id: number;
-  x: number;
-  y: number;
-  velocityX: number;
-  velocityY: number;
+  position: Vector2;
+  velocity: Vector2;
+
+  constructor({
+    id,
+    position,
+  }: {
+    id: number;
+    position: Vector2;
+  }) {
+    this.id = id;
+    this.position = position;
+    this.velocity = Vector2.zero();
+  }
+
+  public move(delta: number) {
+    this.position.sum(this.velocity.multiply(delta));
+  }
 }
 
 export interface PlayerConnection {

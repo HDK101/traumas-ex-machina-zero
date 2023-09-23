@@ -18,10 +18,11 @@ class Enemy {
     set life(value) {
         this.currentLife = value;
     }
-    constructor({ createProjectile }){
-        _define_property(this, "currentLife", 1);
-        _define_property(this, "createProjectile", ()=>{});
-        this.createProjectile = createProjectile;
+    constructor(context){
+        _define_property(this, "context", void 0);
+        _define_property(this, "currentLife", void 0);
+        this.context = context;
+        this.currentLife = 1;
     }
 }
 export { Enemy as default };

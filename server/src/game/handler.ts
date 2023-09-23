@@ -3,6 +3,7 @@ import WebSocket from "ws";
 import {Room, Rooms} from "./room.js";
 import {HandlerFunction} from "./handler/messageHandler/HandlerFunction.js";
 import * as rawHandlers from './handler/messageHandler/index.js';
+import Vector2 from "./vector2.js";
 
 export default class WebSocketClientHandler {
   public readonly playerConnection: PlayerConnection;
@@ -10,20 +11,18 @@ export default class WebSocketClientHandler {
   private inRoom?: Room | null;
   private handlers: Map<string, HandlerFunction> = new Map();
 
-  constructor( private readonly playerId: number, 
+  constructor(
+    private readonly playerId: number, 
     private readonly webSocket: WebSocket, 
     public readonly rooms: Rooms
   ) {
     this.rooms = rooms;
     this.webSocket = webSocket;
 
-    this.player = {
+    this.player = new Player({
       id: playerId,
-      x: 0,
-      y: 0,
-      velocityX: 0,
-      velocityY: 0,
-    };
+      position: Vector2.zero(),
+    });
 
     this.playerConnection = {
       socket: webSocket,
@@ -44,7 +43,8 @@ export default class WebSocketClientHandler {
         thisHandler.inRoom = thisHandler.rooms.create();
         thisHandler.inRoom.addPlayer(thisHandler.playerConnection);
       }
-      else { const handlerFunction = thisHandler.handlers.get(playerMessage.type);
+      else { 
+        const handlerFunction = thisHandler.handlers.get(playerMessage.type);
         if (handlerFunction) handlerFunction(playerMessage);
       }
     });

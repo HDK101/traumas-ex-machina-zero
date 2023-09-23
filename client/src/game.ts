@@ -17,19 +17,18 @@ export default class Game {
     this.players = [];
     this.webSocket = webSocket;
 
-    webSocket.addEventListener("open", this.onConnect);
+    webSocket.addEventListener("open", () => this.onConnect());
   }
 
   onConnect() {
     this.webSocket.send(JSON.stringify({
-      // type: 'CREATE_ROOM',
-      type: 'JOIN_ROOM',
+      type: 'CREATE_ROOM',
+      // type: 'JOIN_ROOM',
     }));
 
-    this.webSocket.addEventListener("message", this.onMessage);
+    this.webSocket.addEventListener("message", (event) => this.onMessage(event));
 
     this.input();
-
     this.app.ticker.add((deltaTime: number) => {
       // hexagon.graphics.position.set(300, 300);
       this.update(deltaTime);
@@ -38,7 +37,7 @@ export default class Game {
   }
 
   onMessage(event: MessageEvent) {
-    const { x, y, projectiles, players } = JSON.parse(event.data);
+    const { x, y, projectiles, players, enemies } = JSON.parse(event.data);
   }
 
   update(deltaTime: number) {

@@ -11,7 +11,9 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
+import { Player } from "./types.js";
 import * as rawHandlers from "./handler/messageHandler/index.js";
+import Vector2 from "./vector2.js";
 class WebSocketClientHandler {
     enterRoomById(id) {
         this.inRoom = this.rooms.retrieve(id);
@@ -34,13 +36,10 @@ class WebSocketClientHandler {
         this.handlers = new Map();
         this.rooms = rooms;
         this.webSocket = webSocket;
-        this.player = {
+        this.player = new Player({
             id: playerId,
-            x: 0,
-            y: 0,
-            velocityX: 0,
-            velocityY: 0
-        };
+            position: Vector2.zero()
+        });
         this.playerConnection = {
             socket: webSocket,
             player: this.player

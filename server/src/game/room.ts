@@ -2,6 +2,7 @@ import { PlayerConnection, Player } from "./types.js";
 import { Projectile } from "./projectile.js";
 import Enemy from "./enemy/enemy.js";
 import Midwit from "./enemy/midwit.js";
+import Vector2, {multiplyVectorByValue, sumVectors} from "./vector2.js";
 
 export class Room {
   private players: Map<number, PlayerConnection> = new Map();
@@ -32,35 +33,34 @@ export class Room {
     this.players.delete(id);
   }
 
+  public formatted() {
+    return {
+      id: this.id,
+      players: this.getPlayers(),
+    };
+  }
+
   public tick(deltaTime: number) {
     let projectilesList: Projectile[] = [];
+    let enemiesList: Enemy[] = [];
 
     this.currentTime += deltaTime;
 
+    this.enemies.forEach(enemy => {
+      enemiesList.push(enemy);
+    });
+
     if (this.currentTime >= 1) {
       this.currentTime = 0;
-      
-      this.createProjectile({
-        position: {
-          x: 0,
-          y: 0,
-        },
-        velocity: {
-          x: 100,
-          y: 50,
-        },
-        damage: 2,
-        radius: 2,
-      });
 
       this.createEnemy(new Midwit({
-        createProjectile: this.createProjectile,
+        createProjectile: (projectile: Projectile) => this.createProjectile(projectile),
+        getPlayers: () => this.getPlayers(),
       }));
     }
 
     this.projectiles.forEach(p => {
-      p.position.x += p.velocity.x * deltaTime;
-      p.position.y += p.velocity.y * deltaTime;
+      p.position.sum(p.velocity);
 
       projectilesList.push(p);
     });
@@ -69,14 +69,13 @@ export class Room {
       const player = playerConnection.player;
       const socket = playerConnection.socket;
 
-      player.x += player.velocityX * deltaTime;
-      player.y += player.velocityY * deltaTime;
+      player.move(deltaTime);
 
       socket.send(JSON.stringify({
         players: this.getPlayers(),
-        x: player.x,
-        y: player.y,
+        player: player,
         projectiles: projectilesList,
+        enemies: enemiesList,
       }));
     });
 

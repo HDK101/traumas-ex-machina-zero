@@ -1,19 +1,15 @@
 import {Projectile} from "../projectile.js";
+import {Player} from "../types.js";
 
-interface EnemyConstructorParam {
+interface Context {
   createProjectile: (projectile: Projectile) => void;
+  getPlayers: () => Player[];
 }
 
 export default abstract class Enemy {
   private currentLife: number = 1;
 
-  private createProjectile: (projectile: Projectile) => void = () => {};
-
-  constructor({
-    createProjectile,
-  }: EnemyConstructorParam) {
-    this.createProjectile = createProjectile;
-  }
+  constructor(protected readonly context: Context) {}
 
   protected abstract start(): void;
 

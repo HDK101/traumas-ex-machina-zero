@@ -25,8 +25,8 @@ function playerMove(webSocketClientHandler: WebSocketClientHandler) {
         velocityY += velocity;
       }
 
-      player.velocityX = velocityX;
-      player.velocityY = velocityY;
+      player.velocity.x = velocityX;
+      player.velocity.y = velocityY;
     }
   }
 }

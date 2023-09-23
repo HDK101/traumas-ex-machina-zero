@@ -27,42 +27,39 @@ export class Room {
     removePlayer(id) {
         this.players.delete(id);
     }
+    formatted() {
+        return {
+            id: this.id,
+            players: this.getPlayers()
+        };
+    }
     tick(deltaTime) {
         let projectilesList = [];
+        let enemiesList = [];
         this.currentTime += deltaTime;
+        this.enemies.forEach((enemy)=>{
+            enemiesList.push(enemy);
+        });
         if (this.currentTime >= 1) {
             this.currentTime = 0;
-            this.createProjectile({
-                position: {
-                    x: 0,
-                    y: 0
-                },
-                velocity: {
-                    x: 100,
-                    y: 50
-                },
-                damage: 2,
-                radius: 2
-            });
             this.createEnemy(new Midwit({
-                createProjectile: this.createProjectile
+                createProjectile: (projectile)=>this.createProjectile(projectile),
+                getPlayers: ()=>this.getPlayers()
             }));
         }
         this.projectiles.forEach((p)=>{
-            p.position.x += p.velocity.x * deltaTime;
-            p.position.y += p.velocity.y * deltaTime;
+            p.position.sum(p.velocity);
             projectilesList.push(p);
         });
         this.players.forEach((playerConnection)=>{
             const player = playerConnection.player;
             const socket = playerConnection.socket;
-            player.x += player.velocityX * deltaTime;
-            player.y += player.velocityY * deltaTime;
+            player.move(deltaTime);
             socket.send(JSON.stringify({
                 players: this.getPlayers(),
-                x: player.x,
-                y: player.y,
-                projectiles: projectilesList
+                player: player,
+                projectiles: projectilesList,
+                enemies: enemiesList
             }));
         });
         this.enemies.forEach((enemy)=>{
