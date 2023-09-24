@@ -14,6 +14,7 @@ function _define_property(obj, key, value) {
 import Vector2 from "./vector2.js";
 export class Player {
     move(delta) {
+        console.log(this.velocity.multiply(delta));
         this.position.sum(this.velocity.multiply(delta));
     }
     constructor({ id, position }){

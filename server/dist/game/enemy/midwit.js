@@ -18,7 +18,7 @@ class Midwit extends Enemy {
     start() {
         this.life = 10;
     }
-    update(delta) {
+    innerUpdate(delta) {
         this.currentTime += delta;
         if (this.currentTime >= 0.5) {
             this.context.createProjectile(new Projectile({
@@ -31,7 +31,6 @@ class Midwit extends Enemy {
             this.currentTime = 0;
         }
     }
-    innerUpdate(delta) {}
     constructor(...args){
         super(...args);
         _define_property(this, "currentTime", 0);

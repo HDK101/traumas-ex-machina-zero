@@ -35,20 +35,18 @@ export class Room {
         };
     }
     tick(deltaTime) {
-        let projectilesList = [];
+        let projectilesObject = [];
         let enemiesList = [];
         this.currentTime += deltaTime;
         this.enemies.forEach((enemy)=>{
+            enemy.update(deltaTime);
             enemiesList.push(enemy);
         });
         if (this.currentTime >= 1) {
             this.currentTime = 0;
             this.createEnemy(new Midwit({
                 position: Vector2.from(Math.random() * 300, Math.random() * 300)
-            }, {
-                createProjectile: (projectile)=>this.createProjectile(projectile),
-                getPlayers: ()=>this.getPlayers()
-            }));
+            }, this.createEnemyContext()));
         }
         [
             ...this.projectiles.keys()
@@ -59,7 +57,7 @@ export class Room {
                 this.projectiles.delete(key);
                 this.unusedProjectileIds.push(key);
             } else {
-                projectilesList.push(projectile);
+                projectilesObject[key] = projectile;
             }
         });
         this.players.forEach((playerConnection)=>{
@@ -69,7 +67,7 @@ export class Room {
             socket.send(JSON.stringify({
                 players: this.getPlayers(),
                 player: player,
-                projectiles: projectilesList,
+                projectiles: projectilesObject,
                 enemies: enemiesList
             }));
         });
@@ -78,6 +76,12 @@ export class Room {
         const retrievedPlayers = [];
         this.players.forEach((playerConnection)=>retrievedPlayers.push(playerConnection.player));
         return retrievedPlayers;
+    }
+    createEnemyContext() {
+        return {
+            createProjectile: (projectile)=>this.createProjectile(projectile),
+            getPlayers: ()=>this.getPlayers()
+        };
     }
     constructor(id){
         _define_property(this, "id", void 0);

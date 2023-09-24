@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import {Player} from "./player";
+import Polygon from './polygon';
 
 export default class Game {
   private app: PIXI.Application;
@@ -12,10 +13,25 @@ export default class Game {
   private movingLeft = false;
   private movingRight = false;
 
+  private projectilesGraphics: Polygon[] = [];
+  private playerGraphics: Map<number, Polygon> = new Map();
+  private enemyGraphics: Map<number, Polygon> = new Map();
+
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
     this.app = app;
     this.players = [];
     this.webSocket = webSocket;
+    
+    [...Array(10).keys()].forEach(() => {
+      const polygon = new Polygon({
+        radius: 10,
+        points: 5,
+        pointWobbleIntensity: 0,
+        angleOffset: (Math.PI / 3 + Math.PI / 4) / 2,
+      });
+      this.projectilesGraphics.push(polygon);
+      app.stage.addChild(polygon.graphics);
+    });
 
     webSocket.addEventListener("open", () => this.onConnect());
   }
@@ -37,18 +53,75 @@ export default class Game {
   }
 
   onMessage(event: MessageEvent) {
-    const { x, y, projectiles, players, enemies } = JSON.parse(event.data);
+    const data = JSON.parse(event.data);
+    const { projectiles, players, enemies } = data;
+
+    this.projectilesGraphics.forEach(projectileGraphic => projectileGraphic.enabled = false);
+
+    [...Array(players.length).keys()].forEach(key => {
+      if (!this.playerGraphics.has(key)) {
+        const polygon = new Polygon({
+          points: 6,
+          radius: 32,
+          angleOffset: (Math.PI / 3 + Math.PI / 4) / 2,
+          pointWobbleIntensity: 5,
+        });
+        this.app.stage.addChild(polygon.graphics);
+        this.playerGraphics.set(key, polygon);
+        return;
+      }
+      const polygon = this.playerGraphics.get(key)!;
+      polygon.graphics.position = players[key].position;
+    });
+
+    [...Array(projectiles.length).keys()].forEach((key) => {
+      if (!projectiles[key]) return;
+      const projectileGraphic = this.projectilesGraphics[key];
+      projectileGraphic.enabled = true;
+      this.projectilesGraphics[key].graphics.position = projectiles[key].position;
+    });
+
+    [...Array(enemies.length).keys()].forEach((key) => {
+      if (!this.enemyGraphics.has(key)) {
+        const polygon = new Polygon({
+          points: 6,
+          radius: 32,
+          angleOffset: (Math.PI / 3 + Math.PI / 4) / 2,
+          pointWobbleIntensity: 5,
+        });
+        this.app.stage.addChild(polygon.graphics);
+        this.enemyGraphics.set(key, polygon);
+        return;
+      }
+      const polygon = this.enemyGraphics.get(key)!;
+      polygon.graphics.position = enemies[key].position;
+    });
   }
 
   update(deltaTime: number) {
     this.webSocket.send(JSON.stringify({
         type: 'PLAYER_MOVE',
-        movingUp: this.movingUp,
-        movingDown: this.movingDown,
-        movingLeft: this.movingLeft,
-        movingRight: this.movingRight,
+        moving: {
+          up: this.movingUp,
+          down: this.movingDown,
+          left: this.movingLeft,
+          right: this.movingRight,
+        },
         shooting: this.shooting,
     }));
+
+    this.projectilesGraphics.forEach((projectileGraphic) => {
+      if (!projectileGraphic.enabled) return;
+      projectileGraphic.update(deltaTime);
+    });
+
+    [...this.playerGraphics.values()].forEach(player => {
+      player.update(deltaTime);
+    });
+    
+    [...this.enemyGraphics.values()].forEach(enemy => {
+      enemy.update(deltaTime);
+    });
   }
 
   draw() {
@@ -61,6 +134,7 @@ export default class Game {
     });
 
     document.addEventListener("keydown", (event) => {
+        console.log(event);
         if (event.key === "s") {
           this.movingDown = true;
         }

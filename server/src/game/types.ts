@@ -19,6 +19,7 @@ export class Player {
   }
 
   public move(delta: number) {
+    console.log(this.velocity.multiply(delta));
     this.position.sum(this.velocity.multiply(delta));
   }
 }

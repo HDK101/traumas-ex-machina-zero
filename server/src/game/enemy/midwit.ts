@@ -9,7 +9,7 @@ export default class Midwit extends Enemy {
     this.life = 10;
   }
 
-  public update(delta: number): void {
+  protected innerUpdate(delta: number) {
     this.currentTime += delta;
     if (this.currentTime >= 0.5) {
       this.context.createProjectile(new Projectile({
@@ -21,9 +21,5 @@ export default class Midwit extends Enemy {
       }));
       this.currentTime = 0;
     }
-  }
-
-  protected innerUpdate(delta: number) {
-
   }
 }

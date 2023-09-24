@@ -45,12 +45,13 @@ export class Room {
   }
 
   public tick(deltaTime: number) {
-    let projectilesList: Projectile[] = [];
+    let projectilesObject: { [key: number]: Projectile } = [];
     let enemiesList: Enemy[] = [];
 
     this.currentTime += deltaTime;
 
     this.enemies.forEach(enemy => {
+      enemy.update(deltaTime);
       enemiesList.push(enemy);
     });
 
@@ -69,7 +70,7 @@ export class Room {
         this.projectiles.delete(key);
         this.unusedProjectileIds.push(key);
       } else {
-        projectilesList.push(projectile);
+        projectilesObject[key] = projectile;
       }
     });
 
@@ -82,7 +83,7 @@ export class Room {
       socket.send(JSON.stringify({
         players: this.getPlayers(),
         player: player,
-        projectiles: projectilesList,
+        projectiles: projectilesObject,
         enemies: enemiesList,
       }));
     });
