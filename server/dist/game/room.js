@@ -12,10 +12,11 @@ function _define_property(obj, key, value) {
     return obj;
 }
 import Midwit from "./enemy/midwit.js";
+import Vector2 from "./vector2.js";
 export class Room {
     createProjectile(projectile) {
-        this.projectiles.set(this.currentProjectileId, projectile);
-        this.currentProjectileId += 1;
+        if (this.unusedProjectileIds.length === 0) return;
+        this.projectiles.set(this.unusedProjectileIds.shift(), projectile);
     }
     createEnemy(enemy) {
         this.enemies.set(this.currentEnemyId, enemy);
@@ -43,13 +44,23 @@ export class Room {
         if (this.currentTime >= 1) {
             this.currentTime = 0;
             this.createEnemy(new Midwit({
+                position: Vector2.from(Math.random() * 300, Math.random() * 300)
+            }, {
                 createProjectile: (projectile)=>this.createProjectile(projectile),
                 getPlayers: ()=>this.getPlayers()
             }));
         }
-        this.projectiles.forEach((p)=>{
-            p.position.sum(p.velocity);
-            projectilesList.push(p);
+        [
+            ...this.projectiles.keys()
+        ].forEach((key)=>{
+            const projectile = this.projectiles.get(key);
+            const { expired } = projectile.update(deltaTime);
+            if (expired) {
+                this.projectiles.delete(key);
+                this.unusedProjectileIds.push(key);
+            } else {
+                projectilesList.push(projectile);
+            }
         });
         this.players.forEach((playerConnection)=>{
             const player = playerConnection.player;
@@ -62,9 +73,6 @@ export class Room {
                 enemies: enemiesList
             }));
         });
-        this.enemies.forEach((enemy)=>{
-            enemy.update(deltaTime);
-        });
     }
     getPlayers() {
         const retrievedPlayers = [];
@@ -75,17 +83,18 @@ export class Room {
         _define_property(this, "id", void 0);
         _define_property(this, "players", void 0);
         _define_property(this, "enemies", void 0);
-        _define_property(this, "currentProjectileId", void 0);
         _define_property(this, "currentEnemyId", void 0);
         _define_property(this, "projectiles", void 0);
+        _define_property(this, "unusedProjectileIds", void 0);
         _define_property(this, "currentTime", void 0);
         this.id = id;
         this.players = new Map();
         this.enemies = new Map();
-        this.currentProjectileId = 0;
         this.currentEnemyId = 0;
         this.projectiles = new Map();
+        this.unusedProjectileIds = [];
         this.currentTime = 0;
+        this.unusedProjectileIds = Array.from(Array(10).keys());
     }
 }
 export class Rooms {

@@ -29,13 +29,10 @@ export default class Vector2 {
   sum(vector: Vector2) {
     this.x += vector.x;
     this.y += vector.y;
-    return this;
   }
 
   multiply(value: number) {
-    this.x *= value;
-    this.y *= value;
-    return this;
+    return new Vector2(this.x * value, this.y * value);
   }
 
   sumObject(vector: Vector2Object) {

@@ -1,25 +1,46 @@
 import {Projectile} from "../projectile.js";
 import {Player} from "../types.js";
+import Vector2 from "../vector2.js";
 
 interface Context {
   createProjectile: (projectile: Projectile) => void;
   getPlayers: () => Player[];
 }
 
+interface EnemyConstructorParam {
+  position: Vector2;
+}
+
 export default abstract class Enemy {
+  position: Vector2;
+  velocity: Vector2 = Vector2.from(0, 0);
+
   private currentLife: number = 1;
 
-  constructor(protected readonly context: Context) {}
+  constructor({
+    position,
+  }: EnemyConstructorParam, protected readonly context: Context) {
+    this.position = position;
+  }
 
-  protected abstract start(): void;
-
-  public abstract update(delta: number): void;
+  public update(delta: number) {
+    this.move(delta);
+    this.innerUpdate(delta);
+  }
 
   public get isDead(): boolean {
     return this.currentLife <= 0;
   }
+
+  protected abstract start(): void;
+
+  protected abstract innerUpdate(delta: number): void;
   
   protected set life(value: number) {
     this.currentLife = value;
+  }
+
+  private move(delta: number) {
+    this.position.sum(this.velocity.multiply(delta));
   }
 }

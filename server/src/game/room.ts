@@ -1,5 +1,5 @@
 import { PlayerConnection, Player } from "./types.js";
-import { Projectile } from "./projectile.js";
+import Projectile from "./projectile.js";
 import Enemy from "./enemy/enemy.js";
 import Midwit from "./enemy/midwit.js";
 import Vector2, {multiplyVectorByValue, sumVectors} from "./vector2.js";
@@ -7,17 +7,21 @@ import Vector2, {multiplyVectorByValue, sumVectors} from "./vector2.js";
 export class Room {
   private players: Map<number, PlayerConnection> = new Map();
   private enemies: Map<number, Enemy> = new Map();
-  private currentProjectileId = 0;
   private currentEnemyId = 0;
+
   private projectiles: Map<number, Projectile> = new Map();
+  private unusedProjectileIds: number[] = [];
 
   private currentTime = 0;
 
-  constructor(public readonly id: number) {}
+  constructor(public readonly id: number) {
+    this.unusedProjectileIds = Array.from(Array(10).keys());
+  }
 
   public createProjectile(projectile: Projectile) {
-    this.projectiles.set(this.currentProjectileId, projectile);
-    this.currentProjectileId += 1;
+    if (this.unusedProjectileIds.length === 0) return;
+
+    this.projectiles.set(this.unusedProjectileIds.shift()!, projectile);
   }
 
   public createEnemy(enemy: Enemy) {
@@ -54,15 +58,19 @@ export class Room {
       this.currentTime = 0;
 
       this.createEnemy(new Midwit({
-        createProjectile: (projectile: Projectile) => this.createProjectile(projectile),
-        getPlayers: () => this.getPlayers(),
-      }));
+        position: Vector2.from(Math.random() * 300, Math.random() * 300),
+      }, this.createEnemyContext()));
     }
 
-    this.projectiles.forEach(p => {
-      p.position.sum(p.velocity);
-
-      projectilesList.push(p);
+    [...this.projectiles.keys()].forEach(key => {
+      const projectile: Projectile = this.projectiles.get(key)!;
+      const { expired } = projectile.update(deltaTime);
+      if (expired) {
+        this.projectiles.delete(key);
+        this.unusedProjectileIds.push(key);
+      } else {
+        projectilesList.push(projectile);
+      }
     });
 
     this.players.forEach(playerConnection => {
@@ -78,16 +86,19 @@ export class Room {
         enemies: enemiesList,
       }));
     });
-
-    this.enemies.forEach(enemy => {
-      enemy.update(deltaTime);
-    });
   }
 
   private getPlayers(): Player[] {
     const retrievedPlayers : Player[] = [];
     this.players.forEach(playerConnection => retrievedPlayers.push(playerConnection.player));
     return retrievedPlayers;
+  }
+
+  private createEnemyContext() {
+    return {
+      createProjectile: (projectile: Projectile) => this.createProjectile(projectile),
+      getPlayers: () => this.getPlayers(),
+    };
   }
 }
 

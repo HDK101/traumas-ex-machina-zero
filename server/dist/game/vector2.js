@@ -31,12 +31,9 @@ class Vector2 {
     sum(vector) {
         this.x += vector.x;
         this.y += vector.y;
-        return this;
     }
     multiply(value) {
-        this.x *= value;
-        this.y *= value;
-        return this;
+        return new Vector2(this.x * value, this.y * value);
     }
     sumObject(vector) {
         this.x += vector.x;
