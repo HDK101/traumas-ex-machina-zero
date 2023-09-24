@@ -9,12 +9,16 @@ export interface ProjectileConstructor {
   type: number;
 }
 
+export enum ProjectileType {
+  PLAYER,
+};
+
 export default class Projectile {
   radius: number;
   damage: number;
   position: Vector2;
   velocity: Vector2;
-  type: number;
+  type: ProjectileType;
 
   private timeToExpire = 0.0;
 

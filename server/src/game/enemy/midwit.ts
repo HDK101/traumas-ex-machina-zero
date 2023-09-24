@@ -1,4 +1,4 @@
-import Projectile from "../projectile.js";
+import Projectile, {ProjectileType} from "../projectile.js";
 import Vector2 from "../vector2.js";
 import Enemy from "./enemy.js";
 
@@ -13,7 +13,7 @@ export default class Midwit extends Enemy {
     this.currentTime += delta;
     if (this.currentTime >= 0.5) {
       this.context.createProjectile(new Projectile({
-        type: 0,
+        type: ProjectileType.PLAYER,
         radius: 2,
         damage: 2,
         position: Vector2.from(0, 0),
