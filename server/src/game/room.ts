@@ -2,7 +2,7 @@ import { PlayerConnection, Player } from "./types.js";
 import Projectile from "./projectile.js";
 import Enemy from "./enemy/enemy.js";
 import Midwit from "./enemy/midwit.js";
-import Vector2, {multiplyVectorByValue, sumVectors} from "./vector2.js";
+import Vector2 from "./vector2.js";
 
 export class Room {
   private players: Map<number, PlayerConnection> = new Map();

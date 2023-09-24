@@ -13,6 +13,7 @@ export default class Midwit extends Enemy {
     this.currentTime += delta;
     if (this.currentTime >= 0.5) {
       this.context.createProjectile(new Projectile({
+        type: 0,
         radius: 2,
         damage: 2,
         position: Vector2.from(0, 0),

@@ -6,6 +6,7 @@ export interface ProjectileConstructor {
   position: Vector2;
   velocity: Vector2;
   timeToExpire: number;
+  type: number;
 }
 
 export default class Projectile {
@@ -13,6 +14,7 @@ export default class Projectile {
   damage: number;
   position: Vector2;
   velocity: Vector2;
+  type: number;
 
   private timeToExpire = 0.0;
 
@@ -22,12 +24,14 @@ export default class Projectile {
     position,
     velocity,
     timeToExpire,
+    type,
   }: ProjectileConstructor) {
     this.radius = radius;
     this.damage = damage;
     this.position = position;
     this.velocity = velocity;
     this.timeToExpire = timeToExpire;
+    this.type = type;
   }
 
   public update(deltaTime: number) {
