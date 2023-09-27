@@ -1,5 +1,16 @@
 import Vector2 from "./vector2";
 
+export enum ProjectileType {
+  PISTOL,
+  SHOTGUN,
+  SMG,
+};
+
+export enum ProjectileGroup {
+  PLAYER,
+  ENEMY,
+}
+
 export interface ProjectileConstructor {
   radius: number;
   damage: number;
@@ -7,11 +18,9 @@ export interface ProjectileConstructor {
   velocity: Vector2;
   timeToExpire: number;
   type: number;
+  group: ProjectileGroup;
 }
 
-export enum ProjectileType {
-  PLAYER,
-};
 
 export default class Projectile {
   radius: number;
@@ -19,6 +28,7 @@ export default class Projectile {
   position: Vector2;
   velocity: Vector2;
   type: ProjectileType;
+  group: ProjectileGroup;
 
   private timeToExpire = 0.0;
 
@@ -29,6 +39,7 @@ export default class Projectile {
     velocity,
     timeToExpire,
     type,
+    group,
   }: ProjectileConstructor) {
     this.radius = radius;
     this.damage = damage;
@@ -36,6 +47,7 @@ export default class Projectile {
     this.velocity = velocity;
     this.timeToExpire = timeToExpire;
     this.type = type;
+    this.group = group;
   }
 
   public update(deltaTime: number) {
