@@ -1,4 +1,4 @@
-import Projectile from "../projectile.js";
+import Projectile, {ProjectileConstructor} from "../projectile.js";
 import {Player} from "../types.js";
 import Vector2 from "../vector2.js";
 
@@ -31,6 +31,7 @@ export default abstract class Enemy {
   public get isDead(): boolean {
     return this.currentLife <= 0;
   }
+
 
   protected abstract start(): void;
 

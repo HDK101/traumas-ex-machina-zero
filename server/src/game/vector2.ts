@@ -31,6 +31,18 @@ export default class Vector2 {
     this.y += vector.y;
   }
 
+  distance(to: Vector2) {
+    const deltaX = Math.pow(to.x - this.x, 2);
+    const deltaY = Math.pow(to.y - this.y, 2);
+    return Math.sqrt(deltaX + deltaY);
+  }
+
+  squareDistance(to: Vector2) {
+    const deltaX = Math.pow(to.x - this.x, 2);
+    const deltaY = Math.pow(to.y - this.y, 2);
+    return deltaX + deltaY;
+  }
+
   multiply(value: number) {
     return new Vector2(this.x * value, this.y * value);
   }

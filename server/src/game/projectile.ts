@@ -58,4 +58,8 @@ export default class Projectile {
       expired: this.timeToExpire <= 0,
     };
   }
+
+  get squaredRadius() {
+    return Math.pow(this.radius, 2);
+  }
 }

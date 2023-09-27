@@ -5,6 +5,7 @@ export class Player {
   id: number;
   position: Vector2;
   velocity: Vector2;
+  life: number = 100;
 
   constructor({
     id,
@@ -21,6 +22,10 @@ export class Player {
   public move(delta: number) {
     console.log(this.velocity.multiply(delta));
     this.position.sum(this.velocity.multiply(delta));
+  }
+
+  public damage(value: number) {
+    this.life -= value;
   }
 }
 

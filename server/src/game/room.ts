@@ -65,6 +65,9 @@ export class Room {
 
     [...this.projectiles.keys()].forEach(key => {
       const projectile: Projectile = this.projectiles.get(key)!;
+
+      this.checkProjectileCollision(projectile);
+
       const { expired } = projectile.update(deltaTime);
       if (expired) {
         this.projectiles.delete(key);
@@ -87,6 +90,12 @@ export class Room {
         enemies: enemiesList,
       }));
     });
+  }
+
+  private checkProjectileCollision(projectile: Projectile) {
+    const playersInRange = this.getPlayers().filter(player => player.position.squareDistance(projectile.position) <= projectile.squaredRadius);
+
+    playersInRange.forEach(player => player.damage(projectile.damage));
   }
 
   private getPlayers(): Player[] {
