@@ -17,7 +17,7 @@ export default class Game {
   private playerLifeBar: PIXI.Graphics;
   private projectilesGraphics: Polygon[] = [];
   private playerGraphics: Map<number, Polygon> = new Map();
-  private enemyGraphics: Map<number, Polygon> = new Map();
+  private enemyGraphics: Map<string, Polygon> = new Map();
 
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
     this.app = app;
@@ -52,9 +52,7 @@ export default class Game {
 
     this.input();
     this.app.ticker.add((deltaTime: number) => {
-      // hexagon.graphics.position.set(300, 300);
       this.update(deltaTime);
-      this.draw();
     });
   }
 
@@ -89,7 +87,7 @@ export default class Game {
       this.projectilesGraphics[key].graphics.position = projectiles[key].position;
     });
 
-    [...Array(enemies.length).keys()].forEach((key) => {
+    [...Object.keys(enemies)].forEach((key: string) => {
       if (!this.enemyGraphics.has(key)) {
         const polygon = new Polygon({
           points: 6,
@@ -117,17 +115,11 @@ export default class Game {
         shooting: this.shooting,
     }));
 
-    this.projectilesGraphics.forEach((projectileGraphic) => {
-      projectileGraphic.update(deltaTime);
-    });
+    this.updateEnemies(deltaTime);
+    this.updatePlayers(deltaTime);
+    this.updateProjectiles(deltaTime);
 
-    [...this.playerGraphics.values()].forEach(player => {
-      player.update(deltaTime);
-    });
-    
-    [...this.enemyGraphics.values()].forEach(enemy => {
-      enemy.update(deltaTime);
-    });
+    this.draw();
   }
 
   draw() {
@@ -136,6 +128,44 @@ export default class Game {
       this.playerLifeBar.beginFill(0xFFFF00);
       this.playerLifeBar.drawRect(16, 1, 100 * (this.currentPlayer?.life / 100), 32);
     }
+
+    this.drawProjectiles()
+    this.drawEnemies();
+    this.drawPlayers();
+  }
+
+  private updateProjectiles(deltaTime: number) {
+    this.projectilesGraphics.forEach((projectileGraphic) => {
+      projectileGraphic.update(deltaTime);
+    });
+  }
+
+  private drawProjectiles() {
+    this.projectilesGraphics.forEach((projectileGraphic) => {
+      projectileGraphic.render();
+    });
+  }
+
+  private updatePlayers(deltaTime: number) {
+    this.projectilesGraphics.forEach((projectileGraphic) => {
+      projectileGraphic.update(deltaTime);
+    });
+  }
+
+  private drawPlayers() {
+    this.players.map(player => player.polygon.render());
+  }
+
+  private updateEnemies(deltaTime: number) {
+    [...this.enemyGraphics.values()].forEach(enemy => {
+      enemy.update(deltaTime);
+    });
+  }
+
+  private drawEnemies() {
+    [...this.enemyGraphics.values()].forEach(enemy => {
+      enemy.render();
+    });
   }
 
   private input() {

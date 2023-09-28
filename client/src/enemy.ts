@@ -1,6 +1,6 @@
 import Polygon from "./polygon";
 
-export interface Player {
+export interface Enemy {
   life: number;
   x: number;
   y: number;

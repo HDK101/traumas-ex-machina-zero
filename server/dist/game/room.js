@@ -36,19 +36,35 @@ export class Room {
         };
     }
     tick(deltaTime) {
-        let projectilesObject = [];
-        let enemiesList = [];
         this.currentTime += deltaTime;
-        this.enemies.forEach((enemy)=>{
-            enemy.update(deltaTime);
-            enemiesList.push(enemy);
-        });
         if (this.currentTime >= 1) {
             this.currentTime = 0;
             this.createEnemy(new Midwit({
                 position: Vector2.from(Math.random() * 300, Math.random() * 300)
             }, this.createEnemyContext()));
         }
+        const projectilesObject = this.updateProjectiles(deltaTime);
+        const enemiesObject = this.updateEnemies(deltaTime);
+        this.updatePlayers({
+            projectilesObject,
+            enemiesObject,
+            deltaTime
+        });
+    }
+    updateEnemies(deltaTime) {
+        let enemiesObject = {};
+        console.log(this.enemies.values());
+        [
+            ...this.enemies.keys()
+        ].forEach((key)=>{
+            const enemy = this.enemies.get(key);
+            enemy.update(deltaTime);
+            enemiesObject[key] = enemy;
+        });
+        return enemiesObject;
+    }
+    updateProjectiles(deltaTime) {
+        let projectilesObject = {};
         [
             ...this.projectiles.keys()
         ].forEach((key)=>{
@@ -66,6 +82,9 @@ export class Room {
                 projectilesObject[key] = projectile;
             }
         });
+        return projectilesObject;
+    }
+    updatePlayers({ projectilesObject, enemiesObject, deltaTime }) {
         this.players.forEach((playerConnection)=>{
             const player = playerConnection.player;
             const socket = playerConnection.socket;
@@ -74,7 +93,7 @@ export class Room {
                 players: this.getPlayers(),
                 player: player,
                 projectiles: projectilesObject,
-                enemies: enemiesList
+                enemies: enemiesObject
             }));
         });
     }

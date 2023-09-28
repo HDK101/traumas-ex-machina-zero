@@ -1,21 +1,20 @@
 function playerMove(webSocketClientHandler) {
     return (playerMessage)=>{
         const { player } = webSocketClientHandler;
-        const velocity = 100;
         let velocityX = 0;
         let velocityY = 0;
         if (webSocketClientHandler.playerConnection) {
             if (playerMessage.moving?.left) {
-                velocityX -= velocity;
+                velocityX -= player.speed;
             }
             if (playerMessage.moving?.right) {
-                velocityX += velocity;
+                velocityX += player.speed;
             }
             if (playerMessage.moving?.up) {
-                velocityY -= velocity;
+                velocityY -= player.speed;
             }
             if (playerMessage.moving?.down) {
-                velocityY += velocity;
+                velocityY += player.speed;
             }
             player.velocity.x = velocityX;
             player.velocity.y = velocityY;

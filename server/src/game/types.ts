@@ -7,6 +7,7 @@ export class Player {
   velocity: Vector2;
   life: number = 100;
 
+  readonly speed: number = 300;
   readonly radius: number = 16;
 
   constructor({

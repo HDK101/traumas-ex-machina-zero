@@ -4,6 +4,9 @@ import Enemy from "./enemy/enemy.js";
 import Midwit from "./enemy/midwit.js";
 import Vector2 from "./vector2.js";
 
+interface ProjectilesObject { [key: number]: Projectile }
+interface EnemiesObject { [key: number]: Enemy }
+
 export class Room {
   private players: Map<number, PlayerConnection> = new Map();
   private enemies: Map<number, Enemy> = new Map();
@@ -45,15 +48,7 @@ export class Room {
   }
 
   public tick(deltaTime: number) {
-    let projectilesObject: { [key: number]: Projectile } = [];
-    let enemiesList: Enemy[] = [];
-
     this.currentTime += deltaTime;
-
-    this.enemies.forEach(enemy => {
-      enemy.update(deltaTime);
-      enemiesList.push(enemy);
-    });
 
     if (this.currentTime >= 1) {
       this.currentTime = 0;
@@ -63,6 +58,32 @@ export class Room {
       }, this.createEnemyContext()));
     }
 
+    const projectilesObject = this.updateProjectiles(deltaTime);
+    const enemiesObject = this.updateEnemies(deltaTime);
+
+    this.updatePlayers({
+      projectilesObject,
+      enemiesObject,
+      deltaTime,
+    });
+  }
+
+  private updateEnemies(deltaTime: number) {
+    let enemiesObject: EnemiesObject = {};
+
+    console.log(this.enemies.values());
+
+    [...this.enemies.keys()].forEach(key => {
+      const enemy = this.enemies.get(key)!;
+      enemy.update(deltaTime);
+      enemiesObject[key] = enemy;
+    });
+
+    return enemiesObject;
+  }
+
+  private updateProjectiles(deltaTime: number) {
+    let projectilesObject: ProjectilesObject = {};
     [...this.projectiles.keys()].forEach(key => {
       const projectile: Projectile = this.projectiles.get(key)!;
 
@@ -82,6 +103,18 @@ export class Room {
       }
     });
 
+    return projectilesObject;
+  }
+  
+  private updatePlayers({
+    projectilesObject,
+    enemiesObject,
+    deltaTime,
+  }: {
+    projectilesObject: ProjectilesObject;
+    enemiesObject: EnemiesObject;
+    deltaTime: number;
+  }) {
     this.players.forEach(playerConnection => {
       const player = playerConnection.player;
       const socket = playerConnection.socket;
@@ -92,7 +125,7 @@ export class Room {
         players: this.getPlayers(),
         player: player,
         projectiles: projectilesObject,
-        enemies: enemiesList,
+        enemies: enemiesObject,
       }));
     });
   }

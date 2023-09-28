@@ -2,8 +2,7 @@ import * as PIXI from 'pixi.js';
 
 interface PolygonConstructor {
   radius: number;
-  points: number;
-  angleOffset: number;
+  points: number; angleOffset: number;
   pointWobbleIntensity: number;
 }
 
@@ -17,6 +16,8 @@ export default class Polygon {
   pointWobbleIntensity: number;
 
   public readonly graphics: PIXI.Graphics;
+
+  private calculatedPoints: PIXI.IPointData[] = [];
 
   constructor({
     radius,
@@ -32,21 +33,24 @@ export default class Polygon {
   }
 
   update(deltaTime: number) {
+    this.calculatedPoints = [];
     this.elapsedTime += deltaTime;
-    this.graphics.clear();
     if (!this.enabled) return;
-    this.graphics.lineStyle(5, 0xff0000);
-    const calculatedPoints: PIXI.IPointData[] = [];
     for (let i = 0; i < this.points; i++) {
       const rads = 2 * Math.PI * (i / this.points) + this.angleOffset;
       const offset = i / 2 * Math.PI;
       const calculatedOffsetX = Math.sin(this.elapsedTime * 0.1 + offset) * this.pointWobbleIntensity;
       const calculatedOffsetY = Math.cos(this.elapsedTime * 0.1 + offset) * this.pointWobbleIntensity;
-      calculatedPoints.push({
+      this.calculatedPoints.push({
         x: Math.cos(rads) * this.radius + calculatedOffsetX,
         y: Math.sin(rads) * this.radius + calculatedOffsetY,
       });
     }
-    this.graphics.drawPolygon(calculatedPoints);
+  }
+
+  render() {
+    this.graphics.clear();
+    this.graphics.lineStyle(5, 0xff0000);
+    this.graphics.drawPolygon(this.calculatedPoints);
   }
 }
