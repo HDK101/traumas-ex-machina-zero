@@ -8,7 +8,7 @@ interface PolygonConstructor {
 }
 
 export default class Polygon {
-  enabled: boolean = false;
+  enabled: boolean = true;
   elapsedTime: number = 0;
 
   radius: number;
@@ -34,6 +34,7 @@ export default class Polygon {
   update(deltaTime: number) {
     this.elapsedTime += deltaTime;
     this.graphics.clear();
+    if (!this.enabled) return;
     this.graphics.lineStyle(5, 0xff0000);
     const calculatedPoints: PIXI.IPointData[] = [];
     for (let i = 0; i < this.points; i++) {

@@ -118,7 +118,6 @@ export default class Game {
     }));
 
     this.projectilesGraphics.forEach((projectileGraphic) => {
-      if (!projectileGraphic.enabled) return;
       projectileGraphic.update(deltaTime);
     });
 
