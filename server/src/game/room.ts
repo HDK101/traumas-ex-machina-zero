@@ -1,5 +1,5 @@
 import { PlayerConnection, Player } from "./types.js";
-import Projectile from "./projectile.js";
+import Projectile, {ProjectileGroup, ProjectileType} from "./projectile.js";
 import Enemy from "./enemy/enemy.js";
 import Midwit from "./enemy/midwit.js";
 import Vector2 from "./vector2.js";
@@ -66,10 +66,15 @@ export class Room {
     [...this.projectiles.keys()].forEach(key => {
       const projectile: Projectile = this.projectiles.get(key)!;
 
-      this.checkProjectileCollision(projectile);
+      if (projectile.group === ProjectileGroup.ENEMY) {
+        this.checkProjectileCollisionPlayers(projectile);
+      }
+      else if (projectile.group === ProjectileGroup.PLAYER) {
+        this.checkProjectileCollisionEnemies(projectile);
+      }
 
-      const { expired } = projectile.update(deltaTime);
-      if (expired) {
+      const { queuedToDeleted, expired } = projectile.update(deltaTime);
+      if (expired || queuedToDeleted) {
         this.projectiles.delete(key);
         this.unusedProjectileIds.push(key);
       } else {
@@ -92,10 +97,26 @@ export class Room {
     });
   }
 
-  private checkProjectileCollision(projectile: Projectile) {
-    const playersInRange = this.getPlayers().filter(player => player.position.squareDistance(projectile.position) <= projectile.squaredRadius);
+  private checkProjectileCollisionPlayers(projectile: Projectile) {
+    const playersInRange = this.getPlayers().filter(player => player.position.squareDistance(projectile.position) <= projectile.squaredRadius + player.radius);
 
     playersInRange.forEach(player => player.damage(projectile.damage));
+    
+    if (playersInRange.length > 0) projectile.queueToDelete();
+  }
+
+  private checkProjectileCollisionEnemies(projectile: Projectile) {
+    const enemiesInRange = this.getEnemies().filter(enemy => enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
+
+    enemiesInRange.forEach(enemy => enemy.damage(projectile.damage));
+
+    if (enemiesInRange.length > 0) projectile.queueToDelete();
+  }
+
+  private getEnemies(): Enemy[] {
+    const retrievedEnemies: Enemy[] = [];
+    this.enemies.forEach(enemy => retrievedEnemies.push(enemy));
+    return retrievedEnemies;
   }
 
   private getPlayers(): Player[] {

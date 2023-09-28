@@ -14,13 +14,17 @@ function _define_property(obj, key, value) {
 import Vector2 from "./vector2.js";
 export class Player {
     move(delta) {
-        console.log(this.velocity.multiply(delta));
         this.position.sum(this.velocity.multiply(delta));
+    }
+    damage(value) {
+        this.life -= value;
     }
     constructor({ id, position }){
         _define_property(this, "id", void 0);
         _define_property(this, "position", void 0);
         _define_property(this, "velocity", void 0);
+        _define_property(this, "life", 100);
+        _define_property(this, "radius", 16);
         this.id = id;
         this.position = position;
         this.velocity = Vector2.zero();

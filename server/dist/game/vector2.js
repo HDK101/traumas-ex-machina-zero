@@ -32,8 +32,27 @@ class Vector2 {
         this.x += vector.x;
         this.y += vector.y;
     }
+    distance(to) {
+        const deltaX = Math.pow(to.x - this.x, 2);
+        const deltaY = Math.pow(to.y - this.y, 2);
+        return Math.sqrt(deltaX + deltaY);
+    }
+    direction(to) {
+        const calculatedDistance = this.distance(to);
+        const rawDirection = Vector2.from(to.x - this.x, to.y - this.y);
+        const normalizedDirection = rawDirection.divide(calculatedDistance);
+        return normalizedDirection;
+    }
+    squareDistance(to) {
+        const deltaX = Math.pow(to.x - this.x, 2);
+        const deltaY = Math.pow(to.y - this.y, 2);
+        return deltaX + deltaY;
+    }
     multiply(value) {
         return new Vector2(this.x * value, this.y * value);
+    }
+    divide(value) {
+        return new Vector2(this.x / value, this.y / value);
     }
     sumObject(vector) {
         this.x += vector.x;

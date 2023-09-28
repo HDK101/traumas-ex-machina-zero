@@ -18,7 +18,7 @@ const button = new Button(
           .drawRoundedRect(0, 0, 100, 50, 15)
 );
 
-container.addChild(button.view);
+// container.addChild(button.view);
 
 const webSocket = new WebSocket("ws://localhost:13200");
 

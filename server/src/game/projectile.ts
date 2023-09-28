@@ -16,6 +16,7 @@ export interface ProjectileConstructor {
   damage: number;
   position: Vector2;
   velocity: Vector2;
+  speed: number;
   timeToExpire: number;
   type: number;
   group: ProjectileGroup;
@@ -27,8 +28,10 @@ export default class Projectile {
   damage: number;
   position: Vector2;
   velocity: Vector2;
+  speed: number;
   type: ProjectileType;
   group: ProjectileGroup;
+  queuedToDeleted: boolean = false;
 
   private timeToExpire = 0.0;
 
@@ -38,6 +41,7 @@ export default class Projectile {
     position,
     velocity,
     timeToExpire,
+    speed,
     type,
     group,
   }: ProjectileConstructor) {
@@ -48,15 +52,25 @@ export default class Projectile {
     this.timeToExpire = timeToExpire;
     this.type = type;
     this.group = group;
+    this.speed = speed;
   }
 
   public update(deltaTime: number) {
-    this.position.sum(this.velocity.multiply(deltaTime));
+    this.position.sum(this.velocity.multiply(deltaTime * this.speed));
     this.timeToExpire -= deltaTime;
 
     return {
+      queuedToDeleted: this.queuedToDeleted,
       expired: this.timeToExpire <= 0,
     };
+  }
+
+  public queueToDelete(): void {
+    this.queuedToDeleted = true;
+  }
+
+  public isQueuedToDelete(): boolean {
+    return this.queuedToDeleted;
   }
 
   get squaredRadius() {

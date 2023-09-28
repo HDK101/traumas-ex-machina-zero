@@ -37,6 +37,15 @@ export default class Vector2 {
     return Math.sqrt(deltaX + deltaY);
   }
 
+  direction(to: Vector2) {
+    const calculatedDistance = this.distance(to);
+    const rawDirection = Vector2.from(to.x - this.x, to.y - this.y);
+
+    const normalizedDirection = rawDirection.divide(calculatedDistance);
+
+    return normalizedDirection;
+  }
+
   squareDistance(to: Vector2) {
     const deltaX = Math.pow(to.x - this.x, 2);
     const deltaY = Math.pow(to.y - this.y, 2);
@@ -45,6 +54,10 @@ export default class Vector2 {
 
   multiply(value: number) {
     return new Vector2(this.x * value, this.y * value);
+  }
+
+  divide(value: number) {
+    return new Vector2(this.x / value, this.y / value);
   }
 
   sumObject(vector: Vector2Object) {

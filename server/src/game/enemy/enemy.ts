@@ -32,6 +32,9 @@ export default abstract class Enemy {
     return this.currentLife <= 0;
   }
 
+  public damage(value: number) {
+    this.currentLife -= value;
+  }
 
   protected abstract start(): void;
 

@@ -20,6 +20,9 @@ class Enemy {
     get isDead() {
         return this.currentLife <= 0;
     }
+    damage(value) {
+        this.currentLife -= value;
+    }
     set life(value) {
         this.currentLife = value;
     }

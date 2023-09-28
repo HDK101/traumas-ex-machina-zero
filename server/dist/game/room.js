@@ -11,6 +11,7 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
+import { ProjectileGroup } from "./projectile.js";
 import Midwit from "./enemy/midwit.js";
 import Vector2 from "./vector2.js";
 export class Room {
@@ -52,8 +53,13 @@ export class Room {
             ...this.projectiles.keys()
         ].forEach((key)=>{
             const projectile = this.projectiles.get(key);
-            const { expired } = projectile.update(deltaTime);
-            if (expired) {
+            if (projectile.group === ProjectileGroup.ENEMY) {
+                this.checkProjectileCollisionPlayers(projectile);
+            } else if (projectile.group === ProjectileGroup.PLAYER) {
+                this.checkProjectileCollisionEnemies(projectile);
+            }
+            const { queuedToDeleted, expired } = projectile.update(deltaTime);
+            if (expired || queuedToDeleted) {
                 this.projectiles.delete(key);
                 this.unusedProjectileIds.push(key);
             } else {
@@ -71,6 +77,21 @@ export class Room {
                 enemies: enemiesList
             }));
         });
+    }
+    checkProjectileCollisionPlayers(projectile) {
+        const playersInRange = this.getPlayers().filter((player)=>player.position.squareDistance(projectile.position) <= projectile.squaredRadius + player.radius);
+        playersInRange.forEach((player)=>player.damage(projectile.damage));
+        if (playersInRange.length > 0) projectile.queueToDelete();
+    }
+    checkProjectileCollisionEnemies(projectile) {
+        const enemiesInRange = this.getEnemies().filter((enemy)=>enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
+        enemiesInRange.forEach((enemy)=>enemy.damage(projectile.damage));
+        if (enemiesInRange.length > 0) projectile.queueToDelete();
+    }
+    getEnemies() {
+        const retrievedEnemies = [];
+        this.enemies.forEach((enemy)=>retrievedEnemies.push(enemy));
+        return retrievedEnemies;
     }
     getPlayers() {
         const retrievedPlayers = [];

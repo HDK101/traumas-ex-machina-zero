@@ -7,6 +7,8 @@ export class Player {
   velocity: Vector2;
   life: number = 100;
 
+  readonly radius: number = 16;
+
   constructor({
     id,
     position,
@@ -20,7 +22,6 @@ export class Player {
   }
 
   public move(delta: number) {
-    console.log(this.velocity.multiply(delta));
     this.position.sum(this.velocity.multiply(delta));
   }
 

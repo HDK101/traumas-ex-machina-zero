@@ -6,6 +6,7 @@ export default class Game {
   private app: PIXI.Application;
   private webSocket: WebSocket;
   private players: Player[];
+  private currentPlayer?: Player | null;
   private shooting = false;
 
   private movingUp = false;
@@ -13,6 +14,7 @@ export default class Game {
   private movingLeft = false;
   private movingRight = false;
 
+  private playerLifeBar: PIXI.Graphics;
   private projectilesGraphics: Polygon[] = [];
   private playerGraphics: Map<number, Polygon> = new Map();
   private enemyGraphics: Map<number, Polygon> = new Map();
@@ -20,7 +22,11 @@ export default class Game {
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
     this.app = app;
     this.players = [];
+    this.currentPlayer = null;
     this.webSocket = webSocket;
+    this.playerLifeBar = new PIXI.Graphics();
+
+    app.stage.addChild(this.playerLifeBar);
     
     [...Array(10).keys()].forEach(() => {
       const polygon = new Polygon({
@@ -54,7 +60,9 @@ export default class Game {
 
   onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data);
-    const { projectiles, players, enemies } = data;
+    const { projectiles, players, enemies, player } = data;
+
+    this.currentPlayer = player;
 
     this.projectilesGraphics.forEach(projectileGraphic => projectileGraphic.enabled = false);
 
@@ -91,7 +99,6 @@ export default class Game {
         });
         this.app.stage.addChild(polygon.graphics);
         this.enemyGraphics.set(key, polygon);
-        return;
       }
       const polygon = this.enemyGraphics.get(key)!;
       polygon.graphics.position = enemies[key].position;
@@ -125,12 +132,24 @@ export default class Game {
   }
 
   draw() {
-    
+    if (this.currentPlayer) {
+      this.playerLifeBar.clear();
+      this.playerLifeBar.beginFill(0xFFFF00);
+      this.playerLifeBar.drawRect(16, 1, 100 * (this.currentPlayer?.life / 100), 32);
+    }
   }
 
   private input() {
     document.addEventListener("mousedown", (event: MouseEvent) => {
-      this.shooting = true;
+      if (event.button == 0) {
+        this.shooting = true;
+      }
+    });
+
+    document.addEventListener("mouseup", (event: MouseEvent) => {
+      if (event.button == 0) {
+        this.shooting = false;
+      }
     });
 
     document.addEventListener("keydown", (event) => {

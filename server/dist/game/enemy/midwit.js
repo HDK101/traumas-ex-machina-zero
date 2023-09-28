@@ -11,8 +11,7 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
-import Projectile from "../projectile.js";
-import Vector2 from "../vector2.js";
+import Projectile, { ProjectileGroup, ProjectileType } from "../projectile.js";
 import Enemy from "./enemy.js";
 class Midwit extends Enemy {
     start() {
@@ -20,15 +19,22 @@ class Midwit extends Enemy {
     }
     innerUpdate(delta) {
         this.currentTime += delta;
-        if (this.currentTime >= 0.5) {
-            this.context.createProjectile(new Projectile({
-                radius: 2,
-                damage: 2,
-                position: Vector2.from(0, 0),
-                velocity: Vector2.from(100, 50),
-                timeToExpire: 10
-            }));
-            this.currentTime = 0;
+        const players = this.context.getPlayers();
+        if (players.length > 0) {
+            const firstPlayer = players[0];
+            if (this.currentTime >= 0.5) {
+                this.context.createProjectile(new Projectile({
+                    type: ProjectileType.PISTOL,
+                    group: ProjectileGroup.ENEMY,
+                    radius: 16,
+                    damage: 2,
+                    position: Object.create(this.position),
+                    velocity: this.position.direction(firstPlayer.position),
+                    timeToExpire: 10,
+                    speed: 300
+                }));
+                this.currentTime = 0;
+            }
         }
     }
     constructor(...args){
