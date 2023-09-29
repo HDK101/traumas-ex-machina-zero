@@ -40,7 +40,7 @@ export class Room {
         if (this.currentTime >= 1) {
             this.currentTime = 0;
             this.createEnemy(new Midwit({
-                position: Vector2.from(Math.random() * 300, Math.random() * 300)
+                position: Vector2.from(Math.random() * this.ROOM_MAX_WIDTH, Math.random() * this.ROOM_MAX_HEIGHT)
             }, this.createEnemyContext()));
         }
         const projectilesObject = this.updateProjectiles(deltaTime);
@@ -53,7 +53,6 @@ export class Room {
     }
     updateEnemies(deltaTime) {
         let enemiesObject = {};
-        console.log(this.enemies.values());
         [
             ...this.enemies.keys()
         ].forEach((key)=>{
@@ -84,14 +83,24 @@ export class Room {
         });
         return projectilesObject;
     }
+    retrievePlayersAsObject() {
+        const playersObject = {};
+        [
+            ...this.players.keys()
+        ].forEach((key)=>{
+            playersObject[key] = this.players.get(key)?.player;
+        });
+        return playersObject;
+    }
     updatePlayers({ projectilesObject, enemiesObject, deltaTime }) {
+        const playersObject = this.retrievePlayersAsObject();
         this.players.forEach((playerConnection)=>{
             const player = playerConnection.player;
             const socket = playerConnection.socket;
             player.move(deltaTime);
             socket.send(JSON.stringify({
-                players: this.getPlayers(),
                 player: player,
+                players: playersObject,
                 projectiles: projectilesObject,
                 enemies: enemiesObject
             }));
@@ -131,6 +140,9 @@ export class Room {
         _define_property(this, "projectiles", void 0);
         _define_property(this, "unusedProjectileIds", void 0);
         _define_property(this, "currentTime", void 0);
+        _define_property(this, "MAX_PROJECTILES", void 0);
+        _define_property(this, "ROOM_MAX_WIDTH", void 0);
+        _define_property(this, "ROOM_MAX_HEIGHT", void 0);
         this.id = id;
         this.players = new Map();
         this.enemies = new Map();
@@ -138,7 +150,10 @@ export class Room {
         this.projectiles = new Map();
         this.unusedProjectileIds = [];
         this.currentTime = 0;
-        this.unusedProjectileIds = Array.from(Array(10).keys());
+        this.MAX_PROJECTILES = 1000;
+        this.ROOM_MAX_WIDTH = 2000;
+        this.ROOM_MAX_HEIGHT = 2000;
+        this.unusedProjectileIds = Array.from(Array(this.MAX_PROJECTILES).keys());
     }
 }
 export class Rooms {

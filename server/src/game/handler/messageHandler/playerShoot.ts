@@ -1,25 +1,10 @@
 import WebSocketClientHandler from "../../handler.js";
-import Projectile, {ProjectileGroup, ProjectileType} from "../../projectile.js";
 import {PlayerMessage} from "../../types.js";
-import Vector2 from "../../vector2.js";
 import {MessageHandler} from "./MessageHandler.js";
 
 function playerMove(webSocketClientHandler: WebSocketClientHandler) {
   return (playerMessage: PlayerMessage) => {
     const { player } = webSocketClientHandler;
-
-    if (playerMessage.shooting) {
-      webSocketClientHandler.getCurrentRoom()?.createProjectile(new Projectile({
-          type: ProjectileType.PISTOL,
-          group: ProjectileGroup.PLAYER,
-          radius: 16,
-          damage: 2,
-          position: Object.create(player.position),
-          velocity: Vector2.from(0.5, 0.5),
-          timeToExpire: 10,
-          speed: 300,
-        }));
-    }
 
     let velocityX = 0;
     let velocityY = 0;

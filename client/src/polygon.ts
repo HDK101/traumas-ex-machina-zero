@@ -35,7 +35,6 @@ export default class Polygon {
   update(deltaTime: number) {
     this.calculatedPoints = [];
     this.elapsedTime += deltaTime;
-    if (!this.enabled) return;
     for (let i = 0; i < this.points; i++) {
       const rads = 2 * Math.PI * (i / this.points) + this.angleOffset;
       const offset = i / 2 * Math.PI;
@@ -50,6 +49,7 @@ export default class Polygon {
 
   render() {
     this.graphics.clear();
+    if (!this.enabled) return;
     this.graphics.lineStyle(5, 0xff0000);
     this.graphics.drawPolygon(this.calculatedPoints);
   }

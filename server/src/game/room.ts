@@ -6,6 +6,7 @@ import Vector2 from "./vector2.js";
 
 interface ProjectilesObject { [key: number]: Projectile }
 interface EnemiesObject { [key: number]: Enemy }
+interface PlayersObject { [key: number]: Player }
 
 export class Room {
   private players: Map<number, PlayerConnection> = new Map();
@@ -17,8 +18,13 @@ export class Room {
 
   private currentTime = 0;
 
+  private readonly MAX_PROJECTILES = 1000;
+
+  private readonly ROOM_MAX_WIDTH = 2000;
+  private readonly ROOM_MAX_HEIGHT = 2000;
+
   constructor(public readonly id: number) {
-    this.unusedProjectileIds = Array.from(Array(10).keys());
+    this.unusedProjectileIds = Array.from(Array(this.MAX_PROJECTILES).keys());
   }
 
   public createProjectile(projectile: Projectile) {
@@ -54,7 +60,7 @@ export class Room {
       this.currentTime = 0;
 
       this.createEnemy(new Midwit({
-        position: Vector2.from(Math.random() * 300, Math.random() * 300),
+        position: Vector2.from(Math.random() * this.ROOM_MAX_WIDTH, Math.random() * this.ROOM_MAX_HEIGHT),
       }, this.createEnemyContext()));
     }
 
@@ -70,8 +76,6 @@ export class Room {
 
   private updateEnemies(deltaTime: number) {
     let enemiesObject: EnemiesObject = {};
-
-    console.log(this.enemies.values());
 
     [...this.enemies.keys()].forEach(key => {
       const enemy = this.enemies.get(key)!;
@@ -105,6 +109,16 @@ export class Room {
 
     return projectilesObject;
   }
+
+  private retrievePlayersAsObject() {
+    const playersObject: PlayersObject = {};
+
+    [...this.players.keys()].forEach(key => {
+      playersObject[key] = this.players.get(key)?.player!;
+    });
+
+    return playersObject;
+  }
   
   private updatePlayers({
     projectilesObject,
@@ -115,6 +129,8 @@ export class Room {
     enemiesObject: EnemiesObject;
     deltaTime: number;
   }) {
+    const playersObject = this.retrievePlayersAsObject();
+
     this.players.forEach(playerConnection => {
       const player = playerConnection.player;
       const socket = playerConnection.socket;
@@ -122,8 +138,8 @@ export class Room {
       player.move(deltaTime);
 
       socket.send(JSON.stringify({
-        players: this.getPlayers(),
         player: player,
+        players: playersObject,
         projectiles: projectilesObject,
         enemies: enemiesObject,
       }));

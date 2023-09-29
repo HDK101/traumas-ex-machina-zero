@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import Vector2, {Vector2Object} from "./vector2.js";
+import Vector2 from "./vector2.js";
 
 export class Player {
   id: number;
@@ -38,6 +38,7 @@ export interface PlayerConnection {
 
 export interface PlayerMessage {
   type: 'PLAYER_MOVE' | 'CREATE_ROOM' | 'JOIN_ROOM' | 'LIST_ROOMS';
+  shooting?: boolean;
   moving?: {
     up: boolean;
     down: boolean;
