@@ -1,4 +1,4 @@
-import { PlayerConnection, Player } from "./types.js";
+import { PlayerConnection, Player } from "./types.js";;
 import Projectile, {ProjectileGroup, ProjectileType} from "./projectile.js";
 import Enemy from "./enemy/enemy.js";
 import Midwit from "./enemy/midwit.js";
@@ -80,6 +80,12 @@ export class Room {
     [...this.enemies.keys()].forEach(key => {
       const enemy = this.enemies.get(key)!;
       enemy.update(deltaTime);
+
+      if (enemy.isDead) {
+        this.enemies.delete(key);
+        return;
+      }
+
       enemiesObject[key] = enemy;
     });
 
