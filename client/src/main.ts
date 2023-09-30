@@ -4,10 +4,11 @@ import Game from './game';
 import Polygon from './polygon';
 
 import './style.css'
-import {Container} from 'pixi.js';
+import {Container, DisplayObject} from 'pixi.js';
 
 const app = new PIXI.Application({
   resizeTo: window,
+  eventMode: 'passive',
 });
 
 const container = new PIXI.Container();
@@ -18,6 +19,7 @@ const button = new Button(
           .drawRoundedRect(0, 0, 100, 50, 15)
 );
 
+const displayObject = (app.stage) as DisplayObject;
 // container.addChild(button.view);
 
 const webSocket = new WebSocket("ws://localhost:13200");

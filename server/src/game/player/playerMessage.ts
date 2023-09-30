@@ -1,3 +1,5 @@
+import Vector2, {RawVector2} from "../vector2";
+
 export interface PlayerMessage {
   type: 'PLAYER_MOVE' | 'CREATE_ROOM' | 'JOIN_ROOM' | 'LIST_ROOMS';
   shooting?: boolean;
@@ -8,4 +10,5 @@ export interface PlayerMessage {
     right: boolean;
   };
   roomId: number;
+  mousePosition: RawVector2;
 }

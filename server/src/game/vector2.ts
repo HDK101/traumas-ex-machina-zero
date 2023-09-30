@@ -1,8 +1,17 @@
+export interface RawVector2 {
+  x: number;
+  y: number;
+}
+
 export default class Vector2 {
   constructor(public x: number, public y: number) {}
 
   static from(x: number, y: number) {
     return new Vector2(x, y);
+  }
+
+  static fromRaw({ x, y }: RawVector2) {
+    return Vector2.from(x, y);
   }
 
   static zero() {

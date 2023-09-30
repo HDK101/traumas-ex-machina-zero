@@ -36,7 +36,7 @@ export default class Players {
     });
   }
 
-  public getPlayers(): Player[] {
+  public get all(): Player[] {
     return [...this.pool.values()].map(playerConnection => playerConnection.player);
   }
 

@@ -15,7 +15,7 @@ export default abstract class Enemy {
   position: Vector2;
   velocity: Vector2 = Vector2.from(0, 0);
 
-  private currentLife: number = 1;
+  private currentLife: number = 100;
 
   constructor({
     position,

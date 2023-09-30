@@ -1,7 +1,7 @@
-import Polygon from "./polygon";
-import Vector2 from "./vector2";
+import Polygon from "../polygon";
+import Vector2 from "../vector2";
 
-export class Player {
+export default class Player {
   life: number;
   position: Vector2
   polygon: Polygon;

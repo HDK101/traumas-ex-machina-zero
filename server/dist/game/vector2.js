@@ -15,6 +15,9 @@ class Vector2 {
     static from(x, y) {
         return new Vector2(x, y);
     }
+    static fromRaw({ x, y }) {
+        return Vector2.from(x, y);
+    }
     static zero() {
         return new Vector2(0, 0);
     }

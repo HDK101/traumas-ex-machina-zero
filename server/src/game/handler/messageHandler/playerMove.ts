@@ -7,6 +7,9 @@ import {MessageHandler} from "./MessageHandler.js";
 function playerMove(webSocketClientHandler: WebSocketClientHandler) {
   return (playerMessage: PlayerMessage) => {
     const { player } = webSocketClientHandler;
+    const mousePosition = Vector2.fromRaw(playerMessage.mousePosition);
+
+    const aimDirection =player.position.direction(mousePosition) 
 
     if (playerMessage.shooting) {
       player.projectiles?.create(new Projectile({
@@ -15,7 +18,7 @@ function playerMove(webSocketClientHandler: WebSocketClientHandler) {
           radius: 16,
           damage: 2,
           position: Object.create(player.position),
-          velocity: Vector2.from(0.5, 0.5),
+          velocity: aimDirection,
           timeToExpire: 10,
           speed: 300,
         }));

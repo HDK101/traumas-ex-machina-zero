@@ -63,7 +63,7 @@ export default class Projectiles {
   }
 
   private checkCollisionPlayers(projectile: Projectile) {
-    const playersInRange = this.getPlayers().filter(player => player.position.squareDistance(projectile.position) <= projectile.squaredRadius + player.radius);
+    const playersInRange = this.getPlayers().filter(player => player.position.squareDistance(projectile.position) <= Math.pow(projectile.radius + player.radius, 2));
 
     playersInRange.forEach(player => player.damage(projectile.damage));
     
@@ -72,6 +72,7 @@ export default class Projectiles {
 
   private checkCollisionEnemies(projectile: Projectile) {
     const enemiesInRange = this.getEnemies().filter(enemy => enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
+    console.log(enemiesInRange);
 
     enemiesInRange.forEach(enemy => enemy.damage(projectile.damage));
 

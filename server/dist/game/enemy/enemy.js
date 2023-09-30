@@ -36,7 +36,7 @@ class Enemy {
         _define_property(this, "currentLife", void 0);
         this.context = context;
         this.velocity = Vector2.from(0, 0);
-        this.currentLife = 1;
+        this.currentLife = 100;
         this.position = position;
     }
 }

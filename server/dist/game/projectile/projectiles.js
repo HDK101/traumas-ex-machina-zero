@@ -42,12 +42,13 @@ class Projectiles {
         return projectilesObject;
     }
     checkCollisionPlayers(projectile) {
-        const playersInRange = this.getPlayers().filter((player)=>player.position.squareDistance(projectile.position) <= projectile.squaredRadius + player.radius);
+        const playersInRange = this.getPlayers().filter((player)=>player.position.squareDistance(projectile.position) <= Math.pow(projectile.radius + player.radius, 2));
         playersInRange.forEach((player)=>player.damage(projectile.damage));
         if (playersInRange.length > 0) projectile.queueToDelete();
     }
     checkCollisionEnemies(projectile) {
         const enemiesInRange = this.getEnemies().filter((enemy)=>enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
+        console.log(enemiesInRange);
         enemiesInRange.forEach((enemy)=>enemy.damage(projectile.damage));
         if (enemiesInRange.length > 0) projectile.queueToDelete();
     }

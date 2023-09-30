@@ -3,6 +3,8 @@ import Vector2 from "../../vector2.js";
 function playerMove(webSocketClientHandler) {
     return (playerMessage)=>{
         const { player } = webSocketClientHandler;
+        const mousePosition = Vector2.fromRaw(playerMessage.mousePosition);
+        const aimDirection = player.position.direction(mousePosition);
         if (playerMessage.shooting) {
             player.projectiles?.create(new Projectile({
                 type: ProjectileType.PISTOL,
@@ -10,7 +12,7 @@ function playerMove(webSocketClientHandler) {
                 radius: 16,
                 damage: 2,
                 position: Object.create(player.position),
-                velocity: Vector2.from(0.5, 0.5),
+                velocity: aimDirection,
                 timeToExpire: 10,
                 speed: 300
             }));

@@ -26,7 +26,7 @@ class Players {
             }));
         });
     }
-    getPlayers() {
+    get all() {
         return [
             ...this.pool.values()
         ].map((playerConnection)=>playerConnection.player);

@@ -1,5 +1,6 @@
 import Projectiles from "../projectile/projectiles.js";
 import Vector2 from "../vector2.js";
+import {WeaponList} from "../weapon/weaponList.js";
 
 export default class Player {
   id: number;
@@ -9,7 +10,9 @@ export default class Player {
   projectiles: Projectiles | null;
 
   readonly speed: number = 300;
-  readonly radius: number = 16;
+  readonly radius: number = 32;
+
+  private weapon: WeaponList;
 
   constructor({
     id,
@@ -22,6 +25,7 @@ export default class Player {
     this.id = id;
     this.position = position;
     this.velocity = Vector2.zero();
+    this.weapon = WeaponList.PISTOL;
   }
 
   public move(delta: number) {
@@ -39,6 +43,10 @@ export default class Player {
       velocity: this.velocity,
       radius: this.radius,
     };
+  }
+
+  public get squaredRadius() {
+    return Math.pow(this.radius, 2);
   }
 }
 
