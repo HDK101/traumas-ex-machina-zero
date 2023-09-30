@@ -1,5 +1,5 @@
 import Enemy from "../enemy/enemy.js";
-import {Player} from "../types.js";
+import Player from "../player/player.js";
 import Projectile, {ProjectileGroup} from "./projectile.js";
 
 export interface ProjectilesObject { [key: string]: Projectile }
@@ -15,7 +15,11 @@ export default class Projectiles {
 
   private readonly MAX_PROJECTILES = 1000;
 
-  constructor({
+  constructor() {
+    this.unusedProjectileIds = Array.from(Array(this.MAX_PROJECTILES).keys()).map(key => String(key));
+  }
+
+  public initCallbacks({
     getPlayers,
     getEnemies,
   }: {
@@ -24,7 +28,6 @@ export default class Projectiles {
   }) {
     this.getPlayers = getPlayers;
     this.getEnemies = getEnemies;
-    this.unusedProjectileIds = Array.from(Array(this.MAX_PROJECTILES).keys()).map(key => String(key));
   }
 
   public create(projectile: Projectile) {

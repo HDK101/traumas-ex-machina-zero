@@ -1,7 +1,7 @@
 import WebSocketClientHandler from "../../handler.js";
 import Projectile, {ProjectileGroup, ProjectileType} from "../../projectile/projectile.js";
-import {PlayerMessage} from "../../types.js";
 import Vector2 from "../../vector2.js";
+import { PlayerMessage } from "../../player/playerMessage.js";
 import {MessageHandler} from "./MessageHandler.js";
 
 function playerMove(webSocketClientHandler: WebSocketClientHandler) {

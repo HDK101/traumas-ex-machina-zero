@@ -13,7 +13,7 @@ function _define_property(obj, key, value) {
 }
 import { WebSocketServer } from "ws";
 import WebSocketClientHandler from "./handler.js";
-import { Rooms } from "./room.js";
+import Rooms from "./room/rooms.js";
 class Server {
     tick() {
         this.rooms.forEach((room)=>room.tick(1 / this.ticksPerSecond));

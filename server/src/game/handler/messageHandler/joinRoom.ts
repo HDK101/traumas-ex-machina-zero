@@ -1,5 +1,5 @@
 import WebSocketClientHandler from "../../handler";
-import {PlayerMessage} from "../../types";
+import { PlayerMessage } from "../../player/playerMessage";
 import {MessageHandler} from "./MessageHandler";
 
 function joinRoom(webSocketClientHandler: WebSocketClientHandler) {

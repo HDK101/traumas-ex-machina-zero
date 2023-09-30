@@ -11,7 +11,7 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
-import { Player } from "./types.js";
+import Player from "./player/player.js";
 import * as rawHandlers from "./handler/messageHandler/index.js";
 import Vector2 from "./vector2.js";
 class WebSocketClientHandler {

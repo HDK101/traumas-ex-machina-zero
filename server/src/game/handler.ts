@@ -1,6 +1,9 @@
-import {Player, PlayerConnection, PlayerMessage} from "./types.js";
+import Player from "./player/player.js";
+import { PlayerConnection } from "./player/playerConnection.js";
+import { PlayerMessage } from "./player/playerMessage.js";
 import WebSocket from "ws";
-import {Room, Rooms} from "./room.js";
+import Room from "./room/room.js";
+import Rooms from "./room/rooms.js";
 import {HandlerFunction} from "./handler/messageHandler/HandlerFunction.js";
 import * as rawHandlers from './handler/messageHandler/index.js';
 import Vector2 from "./vector2.js";
@@ -41,7 +44,7 @@ export default class WebSocketClientHandler {
 
       if (playerMessage.type === 'CREATE_ROOM') {
         thisHandler.inRoom = thisHandler.rooms.create();
-        thisHandler.inRoom.addPlayer(thisHandler.playerConnection);
+        thisHandler.inRoom.players.addPlayer(thisHandler.playerConnection);
       }
       else { 
         const handlerFunction = thisHandler.handlers.get(playerMessage.type);
@@ -49,13 +52,13 @@ export default class WebSocketClientHandler {
       }
     });
     webSocket.on("close", () => {
-      thisHandler.inRoom?.removePlayer(thisHandler.playerId);
+      thisHandler.inRoom?.players.removePlayer(thisHandler.playerId);
     });
   }
 
   public enterRoomById(id: number) {
     this.inRoom = this.rooms.retrieve(id);
-    this.inRoom?.addPlayer(this.playerConnection);
+    this.inRoom?.players.addPlayer(this.playerConnection);
   }
 
   public getCurrentRoom() {

@@ -1,8 +1,7 @@
-import WebSocket from "ws";
-import Projectiles from "./projectile/projectiles.js";
-import Vector2 from "./vector2.js";
+import Projectiles from "../projectile/projectiles.js";
+import Vector2 from "../vector2.js";
 
-export class Player {
+export default class Player {
   id: number;
   position: Vector2;
   velocity: Vector2;
@@ -34,19 +33,3 @@ export class Player {
   }
 }
 
-export interface PlayerConnection {
-  socket: WebSocket;
-  player: Player;
-}
-
-export interface PlayerMessage {
-  type: 'PLAYER_MOVE' | 'CREATE_ROOM' | 'JOIN_ROOM' | 'LIST_ROOMS';
-  shooting?: boolean;
-  moving?: {
-    up: boolean;
-    down: boolean;
-    left: boolean;
-    right: boolean;
-  };
-  roomId: number;
-}

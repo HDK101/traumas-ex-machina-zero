@@ -1,5 +1,5 @@
 import Projectile, {ProjectileConstructor} from "../projectile/projectile.js";
-import {Player} from "../types.js";
+import Player from "../player/player.js";
 import Vector2 from "../vector2.js";
 
 interface Context {
