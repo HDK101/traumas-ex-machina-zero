@@ -13,6 +13,10 @@ function _define_property(obj, key, value) {
 }
 import { ProjectileGroup } from "./projectile.js";
 class Projectiles {
+    initCallbacks({ getPlayers, getEnemies }) {
+        this.getPlayers = getPlayers;
+        this.getEnemies = getEnemies;
+    }
     create(projectile) {
         if (this.unusedProjectileIds.length === 0) return;
         this.pool.set(this.unusedProjectileIds.shift(), projectile);
@@ -47,14 +51,12 @@ class Projectiles {
         enemiesInRange.forEach((enemy)=>enemy.damage(projectile.damage));
         if (enemiesInRange.length > 0) projectile.queueToDelete();
     }
-    constructor({ getPlayers, getEnemies }){
+    constructor(){
         _define_property(this, "pool", new Map());
         _define_property(this, "unusedProjectileIds", []);
         _define_property(this, "getPlayers", void 0);
         _define_property(this, "getEnemies", void 0);
         _define_property(this, "MAX_PROJECTILES", 1000);
-        this.getPlayers = getPlayers;
-        this.getEnemies = getEnemies;
         this.unusedProjectileIds = Array.from(Array(this.MAX_PROJECTILES).keys()).map((key)=>String(key));
     }
 }

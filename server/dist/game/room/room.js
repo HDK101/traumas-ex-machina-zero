@@ -14,22 +14,16 @@ function _define_property(obj, key, value) {
 import Midwit from "../enemy/midwit.js";
 import Vector2 from "../vector2.js";
 import Projectiles from "../projectile/projectiles.js";
+import Players from "../player/players.js";
 class Room {
     createEnemy(enemy) {
         this.enemies.set(this.currentEnemyId, enemy);
         this.currentEnemyId += 1;
     }
-    addPlayer(playerConnection) {
-        playerConnection.player.projectiles = this.projectiles;
-        this.players.set(playerConnection.player.id, playerConnection);
-    }
-    removePlayer(id) {
-        this.players.delete(id);
-    }
     formatted() {
         return {
             id: this.id,
-            players: this.getPlayers()
+            players: this.players.getPlayers()
         };
     }
     tick(deltaTime) {
@@ -42,7 +36,7 @@ class Room {
         }
         const projectilesObject = this.projectiles.update(deltaTime);
         const enemiesObject = this.updateEnemies(deltaTime);
-        this.updatePlayers({
+        this.players.update({
             projectilesObject,
             enemiesObject,
             deltaTime
@@ -63,63 +57,36 @@ class Room {
         });
         return enemiesObject;
     }
-    retrievePlayersAsObject() {
-        const playersObject = {};
-        [
-            ...this.players.keys()
-        ].forEach((key)=>{
-            playersObject[key] = this.players.get(key)?.player;
-        });
-        return playersObject;
-    }
-    updatePlayers({ projectilesObject, enemiesObject, deltaTime }) {
-        const playersObject = this.retrievePlayersAsObject();
-        this.players.forEach((playerConnection)=>{
-            const player = playerConnection.player;
-            const socket = playerConnection.socket;
-            player.move(deltaTime);
-            socket.send(JSON.stringify({
-                player: player,
-                players: playersObject,
-                projectiles: projectilesObject,
-                enemies: enemiesObject
-            }));
-        });
-    }
     getEnemies() {
         const retrievedEnemies = [];
         this.enemies.forEach((enemy)=>retrievedEnemies.push(enemy));
         return retrievedEnemies;
     }
-    getPlayers() {
-        const retrievedPlayers = [];
-        this.players.forEach((playerConnection)=>retrievedPlayers.push(playerConnection.player));
-        return retrievedPlayers;
-    }
     createEnemyContext() {
         return {
             createProjectile: (projectile)=>this.projectiles.create(projectile),
-            getPlayers: ()=>this.getPlayers()
+            getPlayers: ()=>this.players.getPlayers()
         };
     }
     constructor(id){
         _define_property(this, "id", void 0);
+        _define_property(this, "projectiles", void 0);
         _define_property(this, "players", void 0);
         _define_property(this, "enemies", void 0);
         _define_property(this, "currentEnemyId", void 0);
-        _define_property(this, "projectiles", void 0);
         _define_property(this, "currentTime", void 0);
         _define_property(this, "ROOM_MAX_WIDTH", void 0);
         _define_property(this, "ROOM_MAX_HEIGHT", void 0);
         this.id = id;
-        this.players = new Map();
         this.enemies = new Map();
         this.currentEnemyId = 0;
         this.currentTime = 0;
         this.ROOM_MAX_WIDTH = 2000;
         this.ROOM_MAX_HEIGHT = 2000;
-        this.projectiles = new Projectiles({
-            getPlayers: ()=>this.getPlayers(),
+        this.projectiles = new Projectiles();
+        this.players = new Players(this.projectiles);
+        this.projectiles.initCallbacks({
+            getPlayers: ()=>this.players.getPlayers(),
             getEnemies: ()=>this.getEnemies()
         });
     }

@@ -10,8 +10,8 @@ type GetEnemiesCallback = () => Enemy[];
 export default class Projectiles {
   private pool: Map<string, Projectile> = new Map();
   private unusedProjectileIds: string[] = [];
-  private getPlayers: GetPlayersCallback;
-  private getEnemies: GetEnemiesCallback;
+  private getPlayers!: GetPlayersCallback;
+  private getEnemies!: GetEnemiesCallback;
 
   private readonly MAX_PROJECTILES = 1000;
 

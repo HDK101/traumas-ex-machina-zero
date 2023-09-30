@@ -1,4 +1,4 @@
-import Room from "./room";
+import Room from "./room.js";
 
 export default class Rooms {
   private rooms: Map<number, Room>;

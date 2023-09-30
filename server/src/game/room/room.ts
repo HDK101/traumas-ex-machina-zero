@@ -1,13 +1,10 @@
-import Player from "../player/player.js";
-import { PlayerConnection } from "../player/playerConnection.js";
 import Projectile from "../projectile/projectile.js";
 import Enemy from "../enemy/enemy.js";
 import Midwit from "../enemy/midwit.js";
 import Vector2 from "../vector2.js";
-import Projectiles, {ProjectilesObject} from "../projectile/projectiles.js";
+import Projectiles from "../projectile/projectiles.js";
 import Players from "../player/players.js";
-
-export interface EnemiesObject { [key: number]: Enemy }
+import {EnemiesObject} from "../enemy/enemies.js";
 
 export default class Room {
   public projectiles: Projectiles;

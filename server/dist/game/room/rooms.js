@@ -11,7 +11,7 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
-import Room from "./room";
+import Room from "./room.js";
 class Rooms {
     create() {
         const room = new Room(this.currentRoomId);

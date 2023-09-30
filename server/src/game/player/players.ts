@@ -1,3 +1,4 @@
+import {EnemiesObject} from "../enemy/enemies";
 import Projectiles, {ProjectilesObject} from "../projectile/projectiles";
 import Player from "./player";
 import {PlayerConnection} from "./playerConnection";
@@ -27,7 +28,7 @@ export default class Players {
       player.move(deltaTime);
 
       socket.send(JSON.stringify({
-        player: player,
+        player: player.formatted(),
         players: playersObject,
         projectiles: projectilesObject,
         enemies: enemiesObject,
@@ -49,6 +50,11 @@ export default class Players {
   }
 
   private retrievePlayersAsObject() {
-    return Object.fromEntries(this.pool);
+    const playersObject: PlayersObject = {};
+    const entries = [...this.pool.entries()];
+    entries.forEach(([key, playerConnection]) => {
+      playersObject[key] = playerConnection.player;
+    });
+    return playersObject;
   }
 }

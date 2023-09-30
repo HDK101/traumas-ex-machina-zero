@@ -19,6 +19,14 @@ class Player {
     damage(value) {
         this.life -= value;
     }
+    formatted() {
+        return {
+            id: this.id,
+            position: this.position,
+            velocity: this.velocity,
+            radius: this.radius
+        };
+    }
     constructor({ id, position }){
         _define_property(this, "id", void 0);
         _define_property(this, "position", void 0);

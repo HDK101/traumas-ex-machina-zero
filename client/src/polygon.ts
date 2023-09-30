@@ -2,7 +2,8 @@ import * as PIXI from 'pixi.js';
 
 interface PolygonConstructor {
   radius: number;
-  points: number; angleOffset: number;
+  points: number; 
+  angleOffset?: number;
   pointWobbleIntensity: number;
 }
 
@@ -22,12 +23,12 @@ export default class Polygon {
   constructor({
     radius,
     points,
-    angleOffset,
     pointWobbleIntensity,
+    angleOffset = 0,
   }: PolygonConstructor) {
     this.radius = radius;
     this.points = points;
-    this.angleOffset = angleOffset;
+    this.angleOffset = (Math.PI / 3 + Math.PI / 4) / 2 + angleOffset;
     this.pointWobbleIntensity = pointWobbleIntensity;
     this.graphics = new PIXI.Graphics();
   }

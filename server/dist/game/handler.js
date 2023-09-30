@@ -17,7 +17,7 @@ import Vector2 from "./vector2.js";
 class WebSocketClientHandler {
     enterRoomById(id) {
         this.inRoom = this.rooms.retrieve(id);
-        this.inRoom?.addPlayer(this.playerConnection);
+        this.inRoom?.players.addPlayer(this.playerConnection);
     }
     getCurrentRoom() {
         return this.inRoom;
@@ -53,14 +53,14 @@ class WebSocketClientHandler {
             const playerMessage = JSON.parse(message.toString());
             if (playerMessage.type === 'CREATE_ROOM') {
                 thisHandler.inRoom = thisHandler.rooms.create();
-                thisHandler.inRoom.addPlayer(thisHandler.playerConnection);
+                thisHandler.inRoom.players.addPlayer(thisHandler.playerConnection);
             } else {
                 const handlerFunction = thisHandler.handlers.get(playerMessage.type);
                 if (handlerFunction) handlerFunction(playerMessage);
             }
         });
         webSocket.on("close", ()=>{
-            thisHandler.inRoom?.removePlayer(thisHandler.playerId);
+            thisHandler.inRoom?.players.removePlayer(thisHandler.playerId);
         });
     }
 }

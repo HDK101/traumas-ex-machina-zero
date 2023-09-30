@@ -31,5 +31,14 @@ export default class Player {
   public damage(value: number) {
     this.life -= value;
   }
+
+  public formatted() {
+    return {
+      id: this.id,
+      position: this.position,
+      velocity: this.velocity,
+      radius: this.radius,
+    };
+  }
 }
 
