@@ -44,6 +44,9 @@ class Vector2 {
     divide(value) {
         return new Vector2(this.x / value, this.y / value);
     }
+    clone() {
+        return Vector2.from(this.x, this.y);
+    }
     constructor(x, y){
         _define_property(this, "x", void 0);
         _define_property(this, "y", void 0);

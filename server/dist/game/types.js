@@ -24,8 +24,10 @@ export class Player {
         _define_property(this, "position", void 0);
         _define_property(this, "velocity", void 0);
         _define_property(this, "life", 100);
+        _define_property(this, "projectiles", void 0);
         _define_property(this, "speed", 300);
         _define_property(this, "radius", 16);
+        this.projectiles = null;
         this.id = id;
         this.position = position;
         this.velocity = Vector2.zero();

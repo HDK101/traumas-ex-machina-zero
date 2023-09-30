@@ -1,4 +1,4 @@
-import Projectile, {ProjectileConstructor} from "../projectile.js";
+import Projectile, {ProjectileConstructor} from "../projectile/projectile.js";
 import {Player} from "../types.js";
 import Vector2 from "../vector2.js";
 

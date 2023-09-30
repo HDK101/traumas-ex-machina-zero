@@ -1,4 +1,4 @@
-import Vector2 from "./vector2.js";
+import Vector2 from "../vector2.js";
 
 export enum ProjectileType {
   PISTOL,
@@ -21,7 +21,6 @@ export interface ProjectileConstructor {
   type: number;
   group: ProjectileGroup;
 }
-
 
 export default class Projectile {
   radius: number;

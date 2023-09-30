@@ -1,36 +1,32 @@
-import { PlayerConnection, Player } from "./types.js";;
-import Projectile, {ProjectileGroup, ProjectileType} from "./projectile.js";
-import Enemy from "./enemy/enemy.js";
-import Midwit from "./enemy/midwit.js";
-import Vector2 from "./vector2.js";
+import { PlayerConnection, Player } from "../types.js";;
+import Projectile from "../projectile/projectile.js";
+import Enemy from "../enemy/enemy.js";
+import Midwit from "../enemy/midwit.js";
+import Vector2 from "../vector2.js";
+import Projectiles, {ProjectilesObject} from "../projectile/projectiles.js";
 
-interface ProjectilesObject { [key: number]: Projectile }
 interface EnemiesObject { [key: number]: Enemy }
 interface PlayersObject { [key: number]: Player }
 
-export class Room {
+export default class Room {
   private players: Map<number, PlayerConnection> = new Map();
   private enemies: Map<number, Enemy> = new Map();
   private currentEnemyId = 0;
 
-  private projectiles: Map<number, Projectile> = new Map();
-  private unusedProjectileIds: number[] = [];
+  private projectiles: Projectiles;
 
   private currentTime = 0;
-
-  private readonly MAX_PROJECTILES = 1000;
 
   private readonly ROOM_MAX_WIDTH = 2000;
   private readonly ROOM_MAX_HEIGHT = 2000;
 
   constructor(public readonly id: number) {
-    this.unusedProjectileIds = Array.from(Array(this.MAX_PROJECTILES).keys());
-  }
-
-  public createProjectile(projectile: Projectile) {
-    if (this.unusedProjectileIds.length === 0) return;
-
-    this.projectiles.set(this.unusedProjectileIds.shift()!, projectile);
+    this.projectiles = new Projectiles(
+      {
+        getPlayers: () => this.getPlayers(),
+        getEnemies: () => this.getEnemies(),
+      }
+    );
   }
 
   public createEnemy(enemy: Enemy) {
@@ -39,6 +35,7 @@ export class Room {
   }
 
   public addPlayer(playerConnection: PlayerConnection): void {
+    playerConnection.player.projectiles = this.projectiles;
     this.players.set(playerConnection.player.id, playerConnection);
   }
 
@@ -64,7 +61,7 @@ export class Room {
       }, this.createEnemyContext()));
     }
 
-    const projectilesObject = this.updateProjectiles(deltaTime);
+    const projectilesObject = this.projectiles.update(deltaTime);
     const enemiesObject = this.updateEnemies(deltaTime);
 
     this.updatePlayers({
@@ -92,29 +89,6 @@ export class Room {
     return enemiesObject;
   }
 
-  private updateProjectiles(deltaTime: number) {
-    let projectilesObject: ProjectilesObject = {};
-    [...this.projectiles.keys()].forEach(key => {
-      const projectile: Projectile = this.projectiles.get(key)!;
-
-      if (projectile.group === ProjectileGroup.ENEMY) {
-        this.checkProjectileCollisionPlayers(projectile);
-      }
-      else if (projectile.group === ProjectileGroup.PLAYER) {
-        this.checkProjectileCollisionEnemies(projectile);
-      }
-
-      const { queuedToDeleted, expired } = projectile.update(deltaTime);
-      if (expired || queuedToDeleted) {
-        this.projectiles.delete(key);
-        this.unusedProjectileIds.push(key);
-      } else {
-        projectilesObject[key] = projectile;
-      }
-    });
-
-    return projectilesObject;
-  }
 
   private retrievePlayersAsObject() {
     const playersObject: PlayersObject = {};
@@ -152,21 +126,6 @@ export class Room {
     });
   }
 
-  private checkProjectileCollisionPlayers(projectile: Projectile) {
-    const playersInRange = this.getPlayers().filter(player => player.position.squareDistance(projectile.position) <= projectile.squaredRadius + player.radius);
-
-    playersInRange.forEach(player => player.damage(projectile.damage));
-    
-    if (playersInRange.length > 0) projectile.queueToDelete();
-  }
-
-  private checkProjectileCollisionEnemies(projectile: Projectile) {
-    const enemiesInRange = this.getEnemies().filter(enemy => enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
-
-    enemiesInRange.forEach(enemy => enemy.damage(projectile.damage));
-
-    if (enemiesInRange.length > 0) projectile.queueToDelete();
-  }
 
   private getEnemies(): Enemy[] {
     const retrievedEnemies: Enemy[] = [];
@@ -182,43 +141,9 @@ export class Room {
 
   private createEnemyContext() {
     return {
-      createProjectile: (projectile: Projectile) => this.createProjectile(projectile),
+      createProjectile: (projectile: Projectile) => this.projectiles.create(projectile),
       getPlayers: () => this.getPlayers(),
     };
   }
 }
 
-export class Rooms {
-  private rooms: Map<number, Room>;
-  private currentRoomId = 0;
-
-  constructor() {
-    this.rooms = new Map();
-  }
-
-  create(): Room {
-    const room: Room = new Room(this.currentRoomId);
-
-    this.rooms.set(this.currentRoomId, room);
-
-    this.currentRoomId += 1;
-
-    return room;
-  }
-
-  retrieve(id: number): Room | undefined {
-    return this.rooms.get(id);
-  }
-
-  retrieveAll(): Room[] {
-    const roomList: Room[] = [];
-
-    this.rooms.forEach(room => roomList.push(room));
-
-    return roomList;
-  }
-
-  forEach(fn: (room: Room) => void) {
-    this.rooms.forEach(fn);
-  }
-}

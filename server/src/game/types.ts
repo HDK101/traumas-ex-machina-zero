@@ -1,4 +1,5 @@
 import WebSocket from "ws";
+import Projectiles from "./projectile/projectiles.js";
 import Vector2 from "./vector2.js";
 
 export class Player {
@@ -6,6 +7,7 @@ export class Player {
   position: Vector2;
   velocity: Vector2;
   life: number = 100;
+  projectiles: Projectiles | null;
 
   readonly speed: number = 300;
   readonly radius: number = 16;
@@ -17,6 +19,7 @@ export class Player {
     id: number;
     position: Vector2;
   }) {
+    this.projectiles = null;
     this.id = id;
     this.position = position;
     this.velocity = Vector2.zero();

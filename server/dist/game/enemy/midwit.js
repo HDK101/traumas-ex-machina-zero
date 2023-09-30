@@ -11,7 +11,7 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
-import Projectile, { ProjectileGroup, ProjectileType } from "../projectile.js";
+import Projectile, { ProjectileGroup, ProjectileType } from "../projectile/projectile.js";
 import Enemy from "./enemy.js";
 class Midwit extends Enemy {
     start() {
@@ -28,7 +28,7 @@ class Midwit extends Enemy {
                     group: ProjectileGroup.ENEMY,
                     radius: 16,
                     damage: 2,
-                    position: Object.create(this.position),
+                    position: this.position.clone(),
                     velocity: this.position.direction(firstPlayer.position),
                     timeToExpire: 10,
                     speed: 300

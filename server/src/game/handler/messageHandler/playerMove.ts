@@ -1,5 +1,5 @@
 import WebSocketClientHandler from "../../handler.js";
-import Projectile, {ProjectileGroup, ProjectileType} from "../../projectile.js";
+import Projectile, {ProjectileGroup, ProjectileType} from "../../projectile/projectile.js";
 import {PlayerMessage} from "../../types.js";
 import Vector2 from "../../vector2.js";
 import {MessageHandler} from "./MessageHandler.js";
@@ -9,7 +9,7 @@ function playerMove(webSocketClientHandler: WebSocketClientHandler) {
     const { player } = webSocketClientHandler;
 
     if (playerMessage.shooting) {
-      webSocketClientHandler.getCurrentRoom()?.createProjectile(new Projectile({
+      player.projectiles?.create(new Projectile({
           type: ProjectileType.PISTOL,
           group: ProjectileGroup.PLAYER,
           radius: 16,

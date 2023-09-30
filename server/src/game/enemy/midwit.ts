@@ -1,4 +1,4 @@
-import Projectile, {ProjectileGroup, ProjectileType} from "../projectile.js";
+import Projectile, {ProjectileGroup, ProjectileType} from "../projectile/projectile.js";
 import Vector2 from "../vector2.js";
 import Enemy from "./enemy.js";
 
@@ -22,7 +22,7 @@ export default class Midwit extends Enemy {
           group: ProjectileGroup.ENEMY,
           radius: 16,
           damage: 2,
-          position: Object.create(this.position),
+          position: this.position.clone(),
           velocity: this.position.direction(firstPlayer.position),
           timeToExpire: 10,
           speed: 300,

@@ -63,7 +63,6 @@ export default class Game {
 
     this.currentPlayer = player;
 
-
     Object.keys(players).forEach(key => {
       if (!this.players.has(key)) {
         const player = new Player();
@@ -148,10 +147,6 @@ export default class Game {
     this.drawProjectiles();
     this.drawEnemies();
     this.drawPlayers();
-  }
-
-  private putPlayers(players: any) {
-
   }
 
   private updateProjectiles(deltaTime: number) {

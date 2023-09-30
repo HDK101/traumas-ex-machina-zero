@@ -11,19 +11,16 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
-import { ProjectileGroup } from "./projectile.js";
 import Midwit from "./enemy/midwit.js";
 import Vector2 from "./vector2.js";
+import Projectiles from "./projectile/projectiles.js";
 export class Room {
-    createProjectile(projectile) {
-        if (this.unusedProjectileIds.length === 0) return;
-        this.projectiles.set(this.unusedProjectileIds.shift(), projectile);
-    }
     createEnemy(enemy) {
         this.enemies.set(this.currentEnemyId, enemy);
         this.currentEnemyId += 1;
     }
     addPlayer(playerConnection) {
+        playerConnection.player.projectiles = this.projectiles;
         this.players.set(playerConnection.player.id, playerConnection);
     }
     removePlayer(id) {
@@ -43,7 +40,7 @@ export class Room {
                 position: Vector2.from(Math.random() * this.ROOM_MAX_WIDTH, Math.random() * this.ROOM_MAX_HEIGHT)
             }, this.createEnemyContext()));
         }
-        const projectilesObject = this.updateProjectiles(deltaTime);
+        const projectilesObject = this.projectiles.update(deltaTime);
         const enemiesObject = this.updateEnemies(deltaTime);
         this.updatePlayers({
             projectilesObject,
@@ -58,30 +55,13 @@ export class Room {
         ].forEach((key)=>{
             const enemy = this.enemies.get(key);
             enemy.update(deltaTime);
+            if (enemy.isDead) {
+                this.enemies.delete(key);
+                return;
+            }
             enemiesObject[key] = enemy;
         });
         return enemiesObject;
-    }
-    updateProjectiles(deltaTime) {
-        let projectilesObject = {};
-        [
-            ...this.projectiles.keys()
-        ].forEach((key)=>{
-            const projectile = this.projectiles.get(key);
-            if (projectile.group === ProjectileGroup.ENEMY) {
-                this.checkProjectileCollisionPlayers(projectile);
-            } else if (projectile.group === ProjectileGroup.PLAYER) {
-                this.checkProjectileCollisionEnemies(projectile);
-            }
-            const { queuedToDeleted, expired } = projectile.update(deltaTime);
-            if (expired || queuedToDeleted) {
-                this.projectiles.delete(key);
-                this.unusedProjectileIds.push(key);
-            } else {
-                projectilesObject[key] = projectile;
-            }
-        });
-        return projectilesObject;
     }
     retrievePlayersAsObject() {
         const playersObject = {};
@@ -106,16 +86,6 @@ export class Room {
             }));
         });
     }
-    checkProjectileCollisionPlayers(projectile) {
-        const playersInRange = this.getPlayers().filter((player)=>player.position.squareDistance(projectile.position) <= projectile.squaredRadius + player.radius);
-        playersInRange.forEach((player)=>player.damage(projectile.damage));
-        if (playersInRange.length > 0) projectile.queueToDelete();
-    }
-    checkProjectileCollisionEnemies(projectile) {
-        const enemiesInRange = this.getEnemies().filter((enemy)=>enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
-        enemiesInRange.forEach((enemy)=>enemy.damage(projectile.damage));
-        if (enemiesInRange.length > 0) projectile.queueToDelete();
-    }
     getEnemies() {
         const retrievedEnemies = [];
         this.enemies.forEach((enemy)=>retrievedEnemies.push(enemy));
@@ -128,7 +98,7 @@ export class Room {
     }
     createEnemyContext() {
         return {
-            createProjectile: (projectile)=>this.createProjectile(projectile),
+            createProjectile: (projectile)=>this.projectiles.create(projectile),
             getPlayers: ()=>this.getPlayers()
         };
     }
@@ -138,22 +108,20 @@ export class Room {
         _define_property(this, "enemies", void 0);
         _define_property(this, "currentEnemyId", void 0);
         _define_property(this, "projectiles", void 0);
-        _define_property(this, "unusedProjectileIds", void 0);
         _define_property(this, "currentTime", void 0);
-        _define_property(this, "MAX_PROJECTILES", void 0);
         _define_property(this, "ROOM_MAX_WIDTH", void 0);
         _define_property(this, "ROOM_MAX_HEIGHT", void 0);
         this.id = id;
         this.players = new Map();
         this.enemies = new Map();
         this.currentEnemyId = 0;
-        this.projectiles = new Map();
-        this.unusedProjectileIds = [];
         this.currentTime = 0;
-        this.MAX_PROJECTILES = 1000;
         this.ROOM_MAX_WIDTH = 2000;
         this.ROOM_MAX_HEIGHT = 2000;
-        this.unusedProjectileIds = Array.from(Array(this.MAX_PROJECTILES).keys());
+        this.projectiles = new Projectiles({
+            getPlayers: ()=>this.getPlayers(),
+            getEnemies: ()=>this.getEnemies()
+        });
     }
 }
 export class Rooms {

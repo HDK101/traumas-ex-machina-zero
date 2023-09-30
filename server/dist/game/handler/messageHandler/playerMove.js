@@ -1,10 +1,10 @@
-import Projectile, { ProjectileGroup, ProjectileType } from "../../projectile.js";
+import Projectile, { ProjectileGroup, ProjectileType } from "../../projectile/projectile.js";
 import Vector2 from "../../vector2.js";
 function playerMove(webSocketClientHandler) {
     return (playerMessage)=>{
         const { player } = webSocketClientHandler;
         if (playerMessage.shooting) {
-            webSocketClientHandler.getCurrentRoom()?.createProjectile(new Projectile({
+            player.projectiles?.create(new Projectile({
                 type: ProjectileType.PISTOL,
                 group: ProjectileGroup.PLAYER,
                 radius: 16,

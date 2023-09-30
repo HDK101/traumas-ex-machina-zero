@@ -42,5 +42,9 @@ export default class Vector2 {
   divide(value: number) {
     return new Vector2(this.x / value, this.y / value);
   }
+
+  clone() {
+    return Vector2.from(this.x, this.y);
+  }
 }
 

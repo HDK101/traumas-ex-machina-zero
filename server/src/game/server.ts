@@ -1,6 +1,6 @@
 import {WebSocketServer} from "ws";
 import WebSocketClientHandler from "./handler.js";
-import {Rooms} from "./room.js";
+import Rooms from "./room/rooms.js";
 
 export default class Server {
   private readonly ONE_MILLISECOND = 1000;
