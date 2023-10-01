@@ -53,6 +53,10 @@ export default class Enemies {
     return [...this.pool.values()];
   }
 
+  public get allAlive(): Enemy[] {
+    return [...this.pool.values()].filter(enemy => !enemy.isDead);
+  }
+
   public createEnemyContext() {
     return {
       createProjectile: (projectile: Projectile) => this.projectiles.create(projectile),

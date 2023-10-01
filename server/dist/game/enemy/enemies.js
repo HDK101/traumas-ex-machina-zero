@@ -41,6 +41,11 @@ class Enemies {
             ...this.pool.values()
         ];
     }
+    get allAlive() {
+        return [
+            ...this.pool.values()
+        ].filter((enemy)=>!enemy.isDead);
+    }
     createEnemyContext() {
         return {
             createProjectile: (projectile)=>this.projectiles.create(projectile),
