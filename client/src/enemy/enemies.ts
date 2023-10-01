@@ -1,4 +1,5 @@
 import {Container} from "pixi.js";
+import Camera from "../camera/camera";
 import Polygon from "../polygon";
 import Enemy from "./enemy";
 
@@ -6,7 +7,7 @@ export default class Enemies {
   private pool: Map<string, Enemy> = new Map();
   private unusedKeys = [];
 
-  constructor(private readonly stage: Container) {}
+  constructor(private readonly stage: Container, private readonly camera: Camera) {}
 
   public onMessage(rawEnemies: any) {
     Object.keys(rawEnemies).forEach((key: string) => {
@@ -16,9 +17,11 @@ export default class Enemies {
       }
       const enemy = this.pool.get(key)!;
       enemy.polygon.graphics.position = rawEnemy.position;
+      enemy.polygon.enabled = true;
 
       if (rawEnemy.currentLife <= 0) {
-        enemy.polygon.enabled = false;
+        this.stage.removeChild(enemy.polygon.graphics);
+        this.pool.delete(key);
       }
     });
   }
@@ -29,11 +32,13 @@ export default class Enemies {
       radius: 32,
       angleOffset: (Math.PI / 3 + Math.PI / 4) / 2,
       pointWobbleIntensity: 5,
+      camera: this.camera,
     });
     const enemy = new Enemy(polygon);
     this.stage.addChild(polygon.graphics);
     this.pool.set(key, enemy);
-    polygon.graphics.position = rawEnemy.position;
+    polygon.position = rawEnemy.position;
+    polygon.enabled = true;
   }
 
   public update(deltaTime: number) {

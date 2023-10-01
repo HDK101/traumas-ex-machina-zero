@@ -1,10 +1,13 @@
 import * as PIXI from 'pixi.js';
+import Camera from './camera/camera';
+import Vector2 from './vector2';
 
 interface PolygonConstructor {
   radius: number;
   points: number; 
   angleOffset?: number;
   pointWobbleIntensity: number;
+  camera: Camera;
 }
 
 export default class Polygon {
@@ -15,6 +18,8 @@ export default class Polygon {
   points: number;
   angleOffset: number;
   pointWobbleIntensity: number;
+  camera: Camera;
+  position: Vector2;
 
   public readonly graphics: PIXI.Graphics;
 
@@ -24,18 +29,23 @@ export default class Polygon {
     radius,
     points,
     pointWobbleIntensity,
+    camera,
     angleOffset = 0,
   }: PolygonConstructor) {
+    this.position = Vector2.zero();
     this.radius = radius;
     this.points = points;
     this.angleOffset = (Math.PI / 3 + Math.PI / 4) / 2 + angleOffset;
     this.pointWobbleIntensity = pointWobbleIntensity;
     this.graphics = new PIXI.Graphics();
+    this.camera = camera;
   }
 
   update(deltaTime: number) {
     this.calculatedPoints = [];
     this.elapsedTime += deltaTime;
+    this.graphics.position.x = -(this.camera.position.x - this.position.x);
+    this.graphics.position.y = -(this.camera.position.y - this.position.y);
     for (let i = 0; i < this.points; i++) {
       const rads = 2 * Math.PI * (i / this.points) + this.angleOffset;
       const offset = i / 2 * Math.PI;

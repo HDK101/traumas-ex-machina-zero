@@ -1,4 +1,5 @@
 import {Container} from "pixi.js";
+import Camera from "../camera/camera";
 import Projectile from "./projectile";
 
 export default class Projectiles {
@@ -6,16 +7,16 @@ export default class Projectiles {
   private pool: Map<string, Projectile> = new Map();
   private readonly keys: string[];
 
-  constructor(private readonly stage: Container) {
+  constructor(private readonly stage: Container, private readonly camera: Camera) {
     this.keys = [...Array(this.MAX_PROJECTILES).keys()].map(key => String(key));
   }
 
   putProjectileFromRaw(key: string, rawProjectile: any) {
-    const projectile = new Projectile(rawProjectile);
+    const projectile = new Projectile({ ...rawProjectile, camera: this.camera });
     this.pool.set(key, projectile);
     this.stage.addChild(projectile.polygon.graphics);
     projectile.polygon.enabled = true;
-    projectile.polygon.graphics.position = rawProjectile.position;
+    projectile.polygon.position = rawProjectile.position;
   }
 
   onMessage(projectiles: any) {
@@ -33,7 +34,7 @@ export default class Projectiles {
       }
 
       projectile.polygon.enabled = true;
-      projectile.polygon.graphics.position = projectiles[key].position;
+      projectile.polygon.position = projectiles[key].position;
     });
   }
 

@@ -22,7 +22,7 @@ class Midwit extends Enemy {
         const players = this.context.getPlayers();
         if (players.length > 0) {
             const firstPlayer = players[0];
-            if (this.currentTime >= 0.5) {
+            if (this.currentTime >= 2) {
                 this.context.createProjectile(new Projectile({
                     type: ProjectileType.PISTOL,
                     group: ProjectileGroup.ENEMY,

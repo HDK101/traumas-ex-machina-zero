@@ -1,10 +1,11 @@
 import {Container} from "pixi.js";
+import Camera from "../camera/camera";
 import Player from "./player";
 
 export default class Players {
   private pool: Map<string, Player> = new Map();
 
-  constructor(private readonly stage: Container) {}
+  constructor(private readonly stage: Container, private readonly camera: Camera) {}
 
   public onMessage(rawPlayers: any) {
     Object.keys(rawPlayers).forEach(key => {
@@ -14,7 +15,7 @@ export default class Players {
         return;
       }
       const player = this.pool.get(key)!;
-      player.polygon.graphics.position = rawPlayer.position;
+      player.polygon.position = rawPlayer.position;
     });
   }
 
@@ -29,9 +30,9 @@ export default class Players {
   }
 
   private putPlayer(key: string, rawPlayer: any) {
-    const player = new Player();
+    const player = new Player(this.camera);
     this.stage.addChild(player.polygon.graphics);
     this.pool.set(key, player);
-    player.polygon.graphics.position = rawPlayer.position;
+    player.polygon.position = rawPlayer.position;
   }
 }

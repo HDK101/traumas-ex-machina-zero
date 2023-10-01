@@ -9,6 +9,7 @@ import {Container, DisplayObject} from 'pixi.js';
 const app = new PIXI.Application({
   resizeTo: window,
   eventMode: 'passive',
+  backgroundColor: '303030',
 });
 
 const container = new PIXI.Container();

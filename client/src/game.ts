@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import Camera from './camera/camera';
 import Enemies from './enemy/enemies';
 import Player from './player/player';
 import Players from './player/players';
@@ -8,8 +9,9 @@ import Vector2 from './vector2';
 export default class Game {
   private app: PIXI.Application;
   private webSocket: WebSocket;
-  private currentPlayer!: Player;
   private shooting = false;
+
+  private camera: Camera;
 
   private movingUp = false;
   private movingDown = false;
@@ -26,17 +28,29 @@ export default class Game {
 
   private middleText: PIXI.Text;
   private currentTextLife = 0.0;
+  
+  private currentPlayer!: any;
+
+  private level: PIXI.Graphics;
 
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
     this.app = app;
     this.webSocket = webSocket;
     this.playerLifeBar = new PIXI.Graphics();
 
-    app.stage.addChild(this.playerLifeBar);
+    this.level = new PIXI.Graphics();
 
-    this.projectiles = new Projectiles(app.stage);
-    this.enemies = new Enemies(app.stage);
-    this.players = new Players(app.stage);
+    this.level.beginFill(0x000000);
+    this.level.drawRect(0, 0, 2000, 2000);
+
+    app.stage.addChild(this.playerLifeBar);
+    app.stage.addChild(this.level);
+
+    this.camera = new Camera();
+
+    this.projectiles = new Projectiles(app.stage, this.camera);
+    this.enemies = new Enemies(app.stage, this.camera);
+    this.players = new Players(app.stage, this.camera);
 
     this.middleText = new PIXI.Text('Game Over', {
       fontFamily: 'Arial',
@@ -54,6 +68,8 @@ export default class Game {
       this.mousePosition.x = event.clientX;
       this.mousePosition.y = event.clientY;
     });
+
+    this.showText("Game Over", 5.0);
   }
 
   onConnect() {
@@ -66,16 +82,20 @@ export default class Game {
 
     this.input();
     this.app.ticker.add((deltaTime: number) => {
+      this.level.position.x = -this.camera.position.x;
+      this.level.position.y = -this.camera.position.y;
       this.middleText.position.x = this.app.renderer.width / 2;
       this.middleText.position.y = this.app.renderer.height / 2;
       this.update(deltaTime);
-      this.showText("Game Over", 5.0);
     });
   }
 
   onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data);
     const { projectiles, players, enemies, player } = data;
+
+    this.camera.position.x = player.position.x - this.app.renderer.width / 2;
+    this.camera.position.y = player.position.y - this.app.renderer.height / 2;
 
     this.currentPlayer = player;
 
@@ -85,6 +105,20 @@ export default class Game {
   }
 
   update(deltaTime: number) {
+    if (!this.currentPlayer) return;
+
+    const calculatedMousePosition = this.mousePosition.clone();
+
+    calculatedMousePosition.minus(Vector2.from(
+      this.app.renderer.width / 2,
+      this.app.renderer.height / 2,
+    ));
+
+    calculatedMousePosition.sum(Vector2.from(
+      this.currentPlayer.position.x,
+      this.currentPlayer.position.y,
+    ));
+
     this.webSocket.send(JSON.stringify({
         type: 'PLAYER_MOVE',
         moving: {
@@ -94,13 +128,15 @@ export default class Game {
           right: this.movingRight,
         },
         shooting: this.shooting,
-        mousePosition: this.mousePosition,
+        mousePosition: calculatedMousePosition,
     }));
 
-    this.currentTextLife -= deltaTime;
+    this.currentTextLife -= (deltaTime) / 60;
     if (this.currentTextLife <= 0) {
       this.middleText.text = "";
     }
+
+    console.log(this.currentTextLife);
 
     this.players.update(deltaTime);
     this.enemies.update(deltaTime);

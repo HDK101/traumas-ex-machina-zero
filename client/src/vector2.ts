@@ -9,9 +9,18 @@ export default class Vector2 {
     return new Vector2(0, 0);
   }
 
+  clone() {
+    return Vector2.from(this.x, this.y);
+  }
+
   sum(vector: Vector2) {
     this.x += vector.x;
     this.y += vector.y;
+  }
+
+  minus(vector: Vector2) {
+    this.x -= vector.x;
+    this.y -= vector.y;
   }
 
   distance(to: Vector2) {
