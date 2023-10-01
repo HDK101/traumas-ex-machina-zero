@@ -50,6 +50,9 @@ class Vector2 {
     clone() {
         return Vector2.from(this.x, this.y);
     }
+    lerp(target, weight = 0.0) {
+        return Vector2.from(this.x + (target.x - this.x) * weight, this.y + (target.y - this.y) * weight);
+    }
     constructor(x, y){
         _define_property(this, "x", void 0);
         _define_property(this, "y", void 0);

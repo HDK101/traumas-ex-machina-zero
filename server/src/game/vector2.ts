@@ -55,5 +55,12 @@ export default class Vector2 {
   clone() {
     return Vector2.from(this.x, this.y);
   }
+
+  lerp(target: Vector2, weight = 0.0) {
+    return Vector2.from(
+      this.x + (target.x - this.x) * weight,
+      this.y + (target.y - this.y) * weight
+    );
+  }
 }
 

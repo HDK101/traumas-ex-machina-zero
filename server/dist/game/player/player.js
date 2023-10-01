@@ -13,17 +13,19 @@ function _define_property(obj, key, value) {
 }
 import Vector2 from "../vector2.js";
 import Pistol from "../weapon/pistol.js";
+import Shotgun from "../weapon/shotgun.js";
+import SMG from "../weapon/smg.js";
 import { WeaponList } from "../weapon/weaponList.js";
 class Player {
     update(deltaTime) {
         if (this.shooting) {
-            this.pistol.shoot({
+            this.selectedWeapon.shoot({
                 position: this.position.clone(),
                 target: this.target.clone()
             });
         }
         this.move(deltaTime);
-        this.pistol.update(deltaTime);
+        this.selectedWeapon.update(deltaTime);
     }
     move(deltaTime) {
         this.position.sum(this.velocity.multiply(deltaTime));
@@ -45,6 +47,8 @@ class Player {
     set projectiles(value) {
         this._projectiles = value;
         this.pistol.projectiles = value;
+        this.smg.projectiles = value;
+        this.shotgun.projectiles = value;
     }
     get projectiles() {
         return this._projectiles;
@@ -62,6 +66,8 @@ class Player {
         _define_property(this, "weapon", void 0);
         _define_property(this, "selectedWeapon", void 0);
         _define_property(this, "pistol", void 0);
+        _define_property(this, "shotgun", void 0);
+        _define_property(this, "smg", void 0);
         this.id = id;
         this.position = position;
         this.velocity = Vector2.zero();
@@ -69,7 +75,13 @@ class Player {
         this.pistol = new Pistol({
             maxAmmo: 50
         });
-        this.selectedWeapon = this.pistol;
+        this.smg = new SMG({
+            maxAmmo: 200
+        });
+        this.shotgun = new Shotgun({
+            maxAmmo: 50
+        });
+        this.selectedWeapon = this.shotgun;
     }
 }
 export { Player as default };

@@ -1,6 +1,8 @@
 import Projectiles from "../projectile/projectiles.js";
 import Vector2 from "../vector2.js";
 import Pistol from "../weapon/pistol.js";
+import Shotgun from "../weapon/shotgun.js";
+import SMG from "../weapon/smg.js";
 import Weapon from "../weapon/weapon.js";
 import {WeaponList} from "../weapon/weaponList.js";
 
@@ -23,6 +25,8 @@ export default class Player {
 
   private selectedWeapon: Weapon;
   private pistol: Pistol;
+  private shotgun: Shotgun;
+  private smg: SMG;
 
   constructor({
     id,
@@ -38,12 +42,19 @@ export default class Player {
     this.pistol = new Pistol({
       maxAmmo: 50,
     });
-    this.selectedWeapon = this.pistol;
+    this.smg = new SMG({
+      maxAmmo: 200,
+    });
+
+    this.shotgun = new Shotgun({
+      maxAmmo: 50,
+    });
+    this.selectedWeapon = this.shotgun;
   }
 
   public update(deltaTime: number) {
     if (this.shooting) {
-      this.pistol.shoot({
+      this.selectedWeapon.shoot({
         position: this.position.clone(),
         target: this.target.clone(),
       });
@@ -51,7 +62,7 @@ export default class Player {
 
     this.move(deltaTime);
 
-    this.pistol.update(deltaTime);
+    this.selectedWeapon.update(deltaTime);
   }
 
   public move(deltaTime: number) {
@@ -79,6 +90,8 @@ export default class Player {
     this._projectiles = value;
 
     this.pistol.projectiles = value;
+    this.smg.projectiles = value;
+    this.shotgun.projectiles = value;
   }
 
   public get projectiles(): Projectiles {
