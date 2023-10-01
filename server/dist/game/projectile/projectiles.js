@@ -47,8 +47,7 @@ class Projectiles {
         if (playersInRange.length > 0) projectile.queueToDelete();
     }
     checkCollisionEnemies(projectile) {
-        const enemiesInRange = this.getEnemies().filter((enemy)=>enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
-        console.log(enemiesInRange);
+        const enemiesInRange = this.getEnemies().filter((enemy)=>enemy.position.squareDistance(projectile.position) <= Math.pow(projectile.radius + enemy.radius, 2)).filter((enemy)=>!enemy.isDead);
         enemiesInRange.forEach((enemy)=>enemy.damage(projectile.damage));
         if (enemiesInRange.length > 0) projectile.queueToDelete();
     }

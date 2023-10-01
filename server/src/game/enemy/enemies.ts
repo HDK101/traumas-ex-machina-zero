@@ -8,29 +8,43 @@ export interface EnemiesObject {
 }
 
 export default class Enemies {
-  private pool: Map<number, Enemy> = new Map();
+  private pool: Map<string, Enemy> = new Map();
   private currentEnemyId = 0;
+  private unusedKeys: string[] = [];
 
   constructor(private readonly players: Players, private readonly projectiles: Projectiles) {}
 
   public create(enemy: Enemy) {
-    this.pool.set(this.currentEnemyId, enemy);
+    if (this.unusedKeys.length > 0) {
+      this.pool.set(this.unusedKeys.shift()!, enemy);
+      return;
+    }
+
+    this.pool.set(String(this.currentEnemyId), enemy);
     this.currentEnemyId += 1;
   }
 
   public update(deltaTime: number) {
     let enemiesObject: EnemiesObject = {};
 
-    [...this.pool.entries()].forEach(([key, enemy])=> {
-      enemy.update(deltaTime);
+    const enemyEntries = [...this.pool.entries()];
 
-      if (enemy.isDead) {
-        this.pool.delete(key);
-        return;
-      }
+    enemyEntries
+        .forEach(([key, enemy])=> {
+          enemiesObject[key] = enemy;
+        });
 
-      enemiesObject[key] = enemy;
-    });
+    enemyEntries
+        .filter(([, enemy]) => enemy.isDead)
+        .forEach(([key, enemy]) => {
+          this.unusedKeys.push(key);
+        });
+    
+    enemyEntries
+        .filter(([, enemy]) => !enemy.isDead)
+        .forEach(([key, enemy])=> {
+          enemy.update(deltaTime);
+        });
 
     return enemiesObject;
   }

@@ -1,9 +1,9 @@
-import Projectile, {ProjectileConstructor} from "../projectile/projectile.js";
+import { CreateProjectile } from "../projectile/projectiles.js";
 import Player from "../player/player.js";
 import Vector2 from "../vector2.js";
 
 interface Context {
-  createProjectile: (projectile: Projectile) => void;
+  createProjectile: CreateProjectile;
   getPlayers: () => Player[];
 }
 
@@ -15,12 +15,16 @@ export default abstract class Enemy {
   position: Vector2;
   velocity: Vector2 = Vector2.from(0, 0);
 
+  public readonly radius = 16;
+
   private currentLife: number = 100;
 
   constructor({
     position,
   }: EnemyConstructorParam, protected readonly context: Context) {
     this.position = position;
+
+    this.start();
   }
 
   public update(delta: number) {

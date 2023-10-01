@@ -4,6 +4,7 @@ import Enemy from "./enemy";
 
 export default class Enemies {
   private pool: Map<string, Enemy> = new Map();
+  private unusedKeys = [];
 
   constructor(private readonly stage: Container) {}
 
@@ -15,6 +16,10 @@ export default class Enemies {
       }
       const enemy = this.pool.get(key)!;
       enemy.polygon.graphics.position = rawEnemy.position;
+
+      if (rawEnemy.currentLife <= 0) {
+        enemy.polygon.enabled = false;
+      }
     });
   }
 

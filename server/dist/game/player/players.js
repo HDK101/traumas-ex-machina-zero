@@ -17,7 +17,7 @@ class Players {
         this.pool.forEach((playerConnection)=>{
             const player = playerConnection.player;
             const socket = playerConnection.socket;
-            player.move(deltaTime);
+            player.update(deltaTime);
             socket.send(JSON.stringify({
                 player: player.formatted(),
                 players: playersObject,

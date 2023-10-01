@@ -3,6 +3,7 @@ import Player from "../player/player.js";
 import Projectile, {ProjectileGroup} from "./projectile.js";
 
 export interface ProjectilesObject { [key: string]: Projectile }
+export type CreateProjectile = (projectile: Projectile) => void;
 
 type GetPlayersCallback = () => Player[];
 type GetEnemiesCallback = () => Enemy[];
@@ -71,8 +72,7 @@ export default class Projectiles {
   }
 
   private checkCollisionEnemies(projectile: Projectile) {
-    const enemiesInRange = this.getEnemies().filter(enemy => enemy.position.squareDistance(projectile.position) <= projectile.squaredRadius);
-    console.log(enemiesInRange);
+    const enemiesInRange = this.getEnemies().filter(enemy => enemy.position.squareDistance(projectile.position) <= Math.pow(projectile.radius + enemy.radius, 2)).filter(enemy => !enemy.isDead);
 
     enemiesInRange.forEach(enemy => enemy.damage(projectile.damage));
 

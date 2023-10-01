@@ -33,11 +33,14 @@ class Enemy {
         _define_property(this, "context", void 0);
         _define_property(this, "position", void 0);
         _define_property(this, "velocity", void 0);
+        _define_property(this, "radius", void 0);
         _define_property(this, "currentLife", void 0);
         this.context = context;
         this.velocity = Vector2.from(0, 0);
+        this.radius = 16;
         this.currentLife = 100;
         this.position = position;
+        this.start();
     }
 }
 export { Enemy as default };

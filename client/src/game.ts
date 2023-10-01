@@ -24,6 +24,9 @@ export default class Game {
   
   private mousePosition: Vector2 = Vector2.zero();
 
+  private middleText: PIXI.Text;
+  private currentTextLife = 0.0;
+
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
     this.app = app;
     this.webSocket = webSocket;
@@ -34,6 +37,16 @@ export default class Game {
     this.projectiles = new Projectiles(app.stage);
     this.enemies = new Enemies(app.stage);
     this.players = new Players(app.stage);
+
+    this.middleText = new PIXI.Text('Game Over', {
+      fontFamily: 'Arial',
+      fontSize: 60,
+      fill: 0xffffff,
+      align: 'justify',
+    });
+
+    this.middleText.anchor.set(0.5, 0.5);
+    this.app.stage.addChild(this.middleText);
 
     webSocket.addEventListener("open", () => this.onConnect());
 
@@ -53,7 +66,10 @@ export default class Game {
 
     this.input();
     this.app.ticker.add((deltaTime: number) => {
+      this.middleText.position.x = this.app.renderer.width / 2;
+      this.middleText.position.y = this.app.renderer.height / 2;
       this.update(deltaTime);
+      this.showText("Game Over", 5.0);
     });
   }
 
@@ -81,6 +97,11 @@ export default class Game {
         mousePosition: this.mousePosition,
     }));
 
+    this.currentTextLife -= deltaTime;
+    if (this.currentTextLife <= 0) {
+      this.middleText.text = "";
+    }
+
     this.players.update(deltaTime);
     this.enemies.update(deltaTime);
     this.projectiles.update(deltaTime);
@@ -98,6 +119,11 @@ export default class Game {
     this.projectiles.render();
     this.enemies.render();
     this.players.render();
+  }
+
+  showText(text: string, life: number) {
+    this.middleText.text = text;
+    this.currentTextLife = life;
   }
 
   private input() {

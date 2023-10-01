@@ -13,20 +13,26 @@ function _define_property(obj, key, value) {
 }
 class Enemies {
     create(enemy) {
-        this.pool.set(this.currentEnemyId, enemy);
+        if (this.unusedKeys.length > 0) {
+            this.pool.set(this.unusedKeys.shift(), enemy);
+            return;
+        }
+        this.pool.set(String(this.currentEnemyId), enemy);
         this.currentEnemyId += 1;
     }
     update(deltaTime) {
         let enemiesObject = {};
-        [
+        const enemyEntries = [
             ...this.pool.entries()
-        ].forEach(([key, enemy])=>{
-            enemy.update(deltaTime);
-            if (enemy.isDead) {
-                this.pool.delete(key);
-                return;
-            }
+        ];
+        enemyEntries.forEach(([key, enemy])=>{
             enemiesObject[key] = enemy;
+        });
+        enemyEntries.filter(([, enemy])=>enemy.isDead).forEach(([key, enemy])=>{
+            this.unusedKeys.push(key);
+        });
+        enemyEntries.filter(([, enemy])=>!enemy.isDead).forEach(([key, enemy])=>{
+            enemy.update(deltaTime);
         });
         return enemiesObject;
     }
@@ -46,10 +52,12 @@ class Enemies {
         _define_property(this, "projectiles", void 0);
         _define_property(this, "pool", void 0);
         _define_property(this, "currentEnemyId", void 0);
+        _define_property(this, "unusedKeys", void 0);
         this.players = players;
         this.projectiles = projectiles;
         this.pool = new Map();
         this.currentEnemyId = 0;
+        this.unusedKeys = [];
     }
 }
 export { Enemies as default };
