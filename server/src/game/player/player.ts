@@ -21,12 +21,13 @@ export default class Player {
   readonly speed: number = 300;
   readonly radius: number = 32;
 
-  private weapon: WeaponList;
-
+  private currentWeaponId: number = 1;
   private selectedWeapon: Weapon;
   private pistol: Pistol;
   private shotgun: Shotgun;
   private smg: SMG;
+
+  private weaponAssociation: { [key: number]: Weapon };
 
   constructor({
     id,
@@ -38,7 +39,6 @@ export default class Player {
     this.id = id;
     this.position = position;
     this.velocity = Vector2.zero();
-    this.weapon = WeaponList.PISTOL;
     this.pistol = new Pistol({
       maxAmmo: 50,
     });
@@ -49,7 +49,13 @@ export default class Player {
     this.shotgun = new Shotgun({
       maxAmmo: 50,
     });
-    this.selectedWeapon = this.shotgun;
+    this.selectedWeapon = this.pistol;
+
+    this.weaponAssociation = {
+      1: this.pistol,
+      2: this.smg,
+      3: this.shotgun,
+    };
   }
 
   public update(deltaTime: number) {
@@ -96,6 +102,13 @@ export default class Player {
 
   public get projectiles(): Projectiles {
     return this._projectiles;
+  }
+
+  public changeWeapon(weaponId: number) {
+    if (this.currentWeaponId == weaponId) return;
+    this.currentWeaponId = weaponId;
+
+    this.selectedWeapon = this.weaponAssociation[weaponId];
   }
 }
 

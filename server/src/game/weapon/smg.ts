@@ -3,7 +3,7 @@ import Weapon, {ShootParam} from "./weapon.js";
 
 export default class SMG extends Weapon {
   public rateInSeconds() {
-    return 0.2;
+    return 0.1;
   }
 
   protected innerShoot({ position, target }: ShootParam): void {

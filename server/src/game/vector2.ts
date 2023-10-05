@@ -23,6 +23,10 @@ export default class Vector2 {
     this.y += vector.y;
   }
 
+  plus(vector: Vector2) {
+    return Vector2.from(this.x + vector.x, this.y + vector.y);
+  }
+
   distance(to: Vector2) {
     const deltaX = Math.pow(to.x - this.x, 2);
     const deltaY = Math.pow(to.y - this.y, 2);

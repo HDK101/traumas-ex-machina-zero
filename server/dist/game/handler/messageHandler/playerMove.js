@@ -5,6 +5,8 @@ function playerMove(webSocketClientHandler) {
         const mousePosition = Vector2.fromRaw(playerMessage.mousePosition);
         player.target = mousePosition;
         player.shooting = playerMessage.shooting;
+        const weaponId = playerMessage.weaponId;
+        player.changeWeapon(weaponId);
         let velocityX = 0;
         let velocityY = 0;
         if (webSocketClientHandler.playerConnection) {

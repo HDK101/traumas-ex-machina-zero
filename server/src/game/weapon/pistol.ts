@@ -7,6 +7,7 @@ export default class Pistol extends Weapon {
   }
 
   protected innerShoot({ position, target }: ShootParam): void {
+    console.log("pistol lol");
     this.projectiles.create(new Projectile({
       radius: 16,
       damage: 2,

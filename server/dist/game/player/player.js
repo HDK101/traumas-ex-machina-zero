@@ -15,7 +15,6 @@ import Vector2 from "../vector2.js";
 import Pistol from "../weapon/pistol.js";
 import Shotgun from "../weapon/shotgun.js";
 import SMG from "../weapon/smg.js";
-import { WeaponList } from "../weapon/weaponList.js";
 class Player {
     update(deltaTime) {
         if (this.shooting) {
@@ -53,6 +52,11 @@ class Player {
     get projectiles() {
         return this._projectiles;
     }
+    changeWeapon(weaponId) {
+        if (this.currentWeaponId == weaponId) return;
+        this.currentWeaponId = weaponId;
+        this.selectedWeapon = this.weaponAssociation[weaponId];
+    }
     constructor({ id, position }){
         _define_property(this, "id", void 0);
         _define_property(this, "position", void 0);
@@ -63,15 +67,15 @@ class Player {
         _define_property(this, "_projectiles", void 0);
         _define_property(this, "speed", 300);
         _define_property(this, "radius", 32);
-        _define_property(this, "weapon", void 0);
+        _define_property(this, "currentWeaponId", 1);
         _define_property(this, "selectedWeapon", void 0);
         _define_property(this, "pistol", void 0);
         _define_property(this, "shotgun", void 0);
         _define_property(this, "smg", void 0);
+        _define_property(this, "weaponAssociation", void 0);
         this.id = id;
         this.position = position;
         this.velocity = Vector2.zero();
-        this.weapon = WeaponList.PISTOL;
         this.pistol = new Pistol({
             maxAmmo: 50
         });
@@ -81,7 +85,12 @@ class Player {
         this.shotgun = new Shotgun({
             maxAmmo: 50
         });
-        this.selectedWeapon = this.shotgun;
+        this.selectedWeapon = this.pistol;
+        this.weaponAssociation = {
+            1: this.pistol,
+            2: this.smg,
+            3: this.shotgun
+        };
     }
 }
 export { Player as default };

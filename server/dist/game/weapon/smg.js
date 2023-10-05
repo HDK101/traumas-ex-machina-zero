@@ -2,7 +2,7 @@ import Projectile, { ProjectileGroup, ProjectileType } from "../projectile/proje
 import Weapon from "./weapon.js";
 class SMG extends Weapon {
     rateInSeconds() {
-        return 0.2;
+        return 0.1;
     }
     innerShoot({ position, target }) {
         this.projectiles.create(new Projectile({

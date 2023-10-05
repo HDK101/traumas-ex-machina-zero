@@ -7,7 +7,8 @@ export default class Shotgun extends Weapon {
     return 1.2;
   }
 
-  private createTransformFromDirection(direction: Vector2) {
+  private createTransformFromDirection(position: Vector2, target: Vector2) {
+    const direction = position.direction(target);
     const radDifference = Math.PI / 2;
     const calculatedRad = Math.atan2(direction.y, direction.x);
     const calculatedFarDirection = direction.multiply(10);
@@ -21,8 +22,10 @@ export default class Shotgun extends Weapon {
     leftDirection.sum(calculatedFarDirection);
     rightDirection.sum(calculatedFarDirection);
 
-    for (let i = 0; i <= 100; i++) {
-      console.log(leftDirection.lerp(rightDirection, (i / 100)));
+    return {
+      center: calculatedFarDirection,
+      left: leftDirection.plus(calculatedFarDirection),
+      right: rightDirection.plus(calculatedFarDirection),
     }
   }
 
@@ -31,16 +34,38 @@ export default class Shotgun extends Weapon {
   }
 
   protected innerShoot({ position, target }: ShootParam): void {
-    this.createTransformFromDirection(position.direction(target));
+    const { center, left, right } = this.createTransformFromDirection(position, position.direction(target));
 
     this.projectiles.create(new Projectile({
       radius: 16,
       damage: 2,
       position: position,
-      velocity: position.direction(target),
+      velocity: center,
       speed: 800,
       timeToExpire: 10,
-      type: ProjectileType.SMG,
+      type: ProjectileType.SHOTGUN,
+      group: ProjectileGroup.PLAYER,
+    }));
+
+    this.projectiles.create(new Projectile({
+      radius: 16,
+      damage: 2,
+      position: position,
+      velocity: left,
+      speed: 800,
+      timeToExpire: 10,
+      type: ProjectileType.SHOTGUN,
+      group: ProjectileGroup.PLAYER,
+    }));
+
+    this.projectiles.create(new Projectile({
+      radius: 16,
+      damage: 2,
+      position: position,
+      velocity: right,
+      speed: 800,
+      timeToExpire: 10,
+      type: ProjectileType.SHOTGUN,
       group: ProjectileGroup.PLAYER,
     }));
   }

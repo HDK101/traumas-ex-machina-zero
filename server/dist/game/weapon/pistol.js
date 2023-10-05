@@ -5,6 +5,7 @@ class Pistol extends Weapon {
         return 0.8;
     }
     innerShoot({ position, target }) {
+        console.log("pistol lol");
         this.projectiles.create(new Projectile({
             radius: 16,
             damage: 2,

@@ -10,5 +10,6 @@ export interface PlayerMessage {
     right: boolean;
   };
   roomId: number;
+  weaponId: number;
   mousePosition: RawVector2;
 }
