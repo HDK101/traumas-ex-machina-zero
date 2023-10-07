@@ -28,21 +28,22 @@ class Wave1 extends Wave {
             this.createEnemy(new Midwit({
                 position: Vector2.from(Math.random() * Room.MAX_WIDTH, Math.random() * Room.MAX_HEIGHT)
             }, this.enemies.createEnemyContext()));
+            this.currentQuantityOfInstantiatedEnemies += 1;
             this.rateInSeconds /= 2;
             this.rateInSeconds = Math.max(this.rateInSeconds, 1);
             this.currentTimeToCreate = 0;
         }
     }
     maxEnemiesToInstantiate() {
-        return 50;
+        return 100;
     }
     maxEnemiesAlive() {
-        return 5;
+        return 50;
     }
     constructor(...args){
         super(...args);
-        _define_property(this, "rateInSeconds", 10);
-        _define_property(this, "currentTimeToCreate", 2);
+        _define_property(this, "rateInSeconds", 1);
+        _define_property(this, "currentTimeToCreate", 0);
     }
 }
 export { Wave1 as default };

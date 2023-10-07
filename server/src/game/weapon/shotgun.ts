@@ -4,28 +4,28 @@ import Weapon, {ShootParam} from "./weapon.js";
 
 export default class Shotgun extends Weapon {
   public rateInSeconds() {
-    return 1.2;
+    return 0.8;
   }
 
   private createTransformFromDirection(position: Vector2, target: Vector2) {
     const direction = position.direction(target);
     const radDifference = Math.PI / 2;
     const calculatedRad = Math.atan2(direction.y, direction.x);
-    const calculatedFarDirection = direction.multiply(10);
+    const directionFar = position.plus(direction.multiply(4));
 
     const leftRad = calculatedRad - radDifference;
     const rightRad = calculatedRad + radDifference;
 
-    const leftDirection = this.calculateDirectionByAngle(leftRad).multiply(4);
-    const rightDirection = this.calculateDirectionByAngle(rightRad).multiply(4);
+    const leftDirectionFar = directionFar.plus(this.calculateDirectionByAngle(leftRad));
+    const rightDirectionFar =  directionFar.plus(this.calculateDirectionByAngle(rightRad));
 
-    leftDirection.sum(calculatedFarDirection);
-    rightDirection.sum(calculatedFarDirection);
+    const leftDirection = position.direction(leftDirectionFar);
+    const rightDirection = position.direction(rightDirectionFar);
 
     return {
-      center: calculatedFarDirection,
-      left: leftDirection.plus(calculatedFarDirection),
-      right: rightDirection.plus(calculatedFarDirection),
+      center: direction,
+      left: leftDirection,
+      right: rightDirection,
     }
   }
 
@@ -34,7 +34,7 @@ export default class Shotgun extends Weapon {
   }
 
   protected innerShoot({ position, target }: ShootParam): void {
-    const { center, left, right } = this.createTransformFromDirection(position, position.direction(target));
+    const { center, left, right } = this.createTransformFromDirection(position, target);
 
     this.projectiles.create(new Projectile({
       radius: 16,
@@ -50,7 +50,7 @@ export default class Shotgun extends Weapon {
     this.projectiles.create(new Projectile({
       radius: 16,
       damage: 2,
-      position: position,
+      position: position.clone(),
       velocity: left,
       speed: 800,
       timeToExpire: 10,
@@ -61,7 +61,7 @@ export default class Shotgun extends Weapon {
     this.projectiles.create(new Projectile({
       radius: 16,
       damage: 2,
-      position: position,
+      position: position.clone(),
       velocity: right,
       speed: 800,
       timeToExpire: 10,

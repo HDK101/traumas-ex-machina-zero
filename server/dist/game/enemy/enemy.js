@@ -12,6 +12,8 @@ function _define_property(obj, key, value) {
     return obj;
 }
 import Vector2 from "../vector2.js";
+import Ammo from "../ammo/ammo.js";
+import { WeaponList } from "../weapon/weaponList.js";
 class Enemy {
     update(delta) {
         this.move(delta);
@@ -22,6 +24,12 @@ class Enemy {
     }
     damage(value) {
         this.currentLife -= value;
+        if (this.currentLife <= 0) {
+            this.onDeath();
+        }
+    }
+    onDeath() {
+        this.context.createAmmo(new Ammo(this.position.clone(), WeaponList.PISTOL, Math.round(Math.random() * 10) * 5));
     }
     set life(value) {
         this.currentLife = value;

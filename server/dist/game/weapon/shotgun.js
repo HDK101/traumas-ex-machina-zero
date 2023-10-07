@@ -3,30 +3,30 @@ import Vector2 from "../vector2.js";
 import Weapon from "./weapon.js";
 class Shotgun extends Weapon {
     rateInSeconds() {
-        return 1.2;
+        return 0.8;
     }
     createTransformFromDirection(position, target) {
         const direction = position.direction(target);
         const radDifference = Math.PI / 2;
         const calculatedRad = Math.atan2(direction.y, direction.x);
-        const calculatedFarDirection = direction.multiply(10);
+        const directionFar = position.plus(direction.multiply(4));
         const leftRad = calculatedRad - radDifference;
         const rightRad = calculatedRad + radDifference;
-        const leftDirection = this.calculateDirectionByAngle(leftRad).multiply(4);
-        const rightDirection = this.calculateDirectionByAngle(rightRad).multiply(4);
-        leftDirection.sum(calculatedFarDirection);
-        rightDirection.sum(calculatedFarDirection);
+        const leftDirectionFar = directionFar.plus(this.calculateDirectionByAngle(leftRad));
+        const rightDirectionFar = directionFar.plus(this.calculateDirectionByAngle(rightRad));
+        const leftDirection = position.direction(leftDirectionFar);
+        const rightDirection = position.direction(rightDirectionFar);
         return {
-            center: calculatedFarDirection,
-            left: leftDirection.plus(calculatedFarDirection),
-            right: rightDirection.plus(calculatedFarDirection)
+            center: direction,
+            left: leftDirection,
+            right: rightDirection
         };
     }
     calculateDirectionByAngle(angle) {
         return Vector2.from(Math.cos(angle), Math.sin(angle));
     }
     innerShoot({ position, target }) {
-        const { center, left, right } = this.createTransformFromDirection(position, position.direction(target));
+        const { center, left, right } = this.createTransformFromDirection(position, target);
         this.projectiles.create(new Projectile({
             radius: 16,
             damage: 2,
@@ -40,7 +40,7 @@ class Shotgun extends Weapon {
         this.projectiles.create(new Projectile({
             radius: 16,
             damage: 2,
-            position: position,
+            position: position.clone(),
             velocity: left,
             speed: 800,
             timeToExpire: 10,
@@ -50,7 +50,7 @@ class Shotgun extends Weapon {
         this.projectiles.create(new Projectile({
             radius: 16,
             damage: 2,
-            position: position,
+            position: position.clone(),
             velocity: right,
             speed: 800,
             timeToExpire: 10,

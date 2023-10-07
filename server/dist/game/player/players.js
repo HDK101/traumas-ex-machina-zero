@@ -12,7 +12,7 @@ function _define_property(obj, key, value) {
     return obj;
 }
 class Players {
-    update({ projectilesObject, enemiesObject, deltaTime }) {
+    update({ ammosObject, projectilesObject, enemiesObject, deltaTime }) {
         const playersObject = this.retrievePlayersAsObject();
         this.pool.forEach((playerConnection)=>{
             const player = playerConnection.player;
@@ -22,7 +22,8 @@ class Players {
                 player: player.formatted(),
                 players: playersObject,
                 projectiles: projectilesObject,
-                enemies: enemiesObject
+                enemies: enemiesObject,
+                ammos: ammosObject
             }));
         });
     }
@@ -30,6 +31,10 @@ class Players {
         return [
             ...this.pool.values()
         ].map((playerConnection)=>playerConnection.player);
+    }
+    playersInRange(position, radius) {
+        const playersInRange = this.all.filter((player)=>player.position.squareDistance(position) <= Math.pow(radius + player.radius, 2));
+        return playersInRange;
     }
     addPlayer(playerConnection) {
         playerConnection.player.projectiles = this.projectiles;

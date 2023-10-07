@@ -1,3 +1,4 @@
+import Ammo from "../ammo/ammo.js";
 import Projectiles from "../projectile/projectiles.js";
 import Vector2 from "../vector2.js";
 import Pistol from "../weapon/pistol.js";
@@ -27,6 +28,8 @@ export default class Player {
   private shotgun: Shotgun;
   private smg: SMG;
 
+  private weapons: Map<WeaponList, Weapon> = new Map();
+
   private weaponAssociation: { [key: number]: Weapon };
 
   constructor({
@@ -50,6 +53,10 @@ export default class Player {
       maxAmmo: 50,
     });
     this.selectedWeapon = this.pistol;
+
+    this.weapons.set(WeaponList.PISTOL, this.pistol);
+    this.weapons.set(WeaponList.SHOTGUN, this.shotgun);
+    this.weapons.set(WeaponList.SMG, this.smg);
 
     this.weaponAssociation = {
       1: this.pistol,
@@ -109,6 +116,10 @@ export default class Player {
     this.currentWeaponId = weaponId;
 
     this.selectedWeapon = this.weaponAssociation[weaponId];
+  }
+
+  public gainAmmo(ammo: Ammo) {
+    this.weapons.get(ammo.weapon)!.replenishAmmo(ammo.quantity);
   }
 }
 

@@ -3,11 +3,10 @@ import Weapon, {ShootParam} from "./weapon.js";
 
 export default class Pistol extends Weapon {
   public rateInSeconds() {
-    return 0.8;
+    return 0.5;
   }
 
   protected innerShoot({ position, target }: ShootParam): void {
-    console.log("pistol lol");
     this.projectiles.create(new Projectile({
       radius: 16,
       damage: 2,

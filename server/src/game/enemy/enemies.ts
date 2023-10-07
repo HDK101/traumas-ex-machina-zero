@@ -1,3 +1,5 @@
+import Ammo from "../ammo/ammo";
+import Ammos from "../ammo/ammos";
 import Players from "../player/players";
 import Projectile from "../projectile/projectile";
 import Projectiles from "../projectile/projectiles";
@@ -12,10 +14,11 @@ export default class Enemies {
   private currentEnemyId = 0;
   private unusedKeys: string[] = [];
 
-  constructor(private readonly players: Players, private readonly projectiles: Projectiles) {}
+  constructor(private readonly players: Players, private readonly projectiles: Projectiles, private readonly ammos: Ammos) {}
 
   public create(enemy: Enemy) {
     if (this.unusedKeys.length > 0) {
+      console.log(this.unusedKeys);
       this.pool.set(this.unusedKeys.shift()!, enemy);
       return;
     }
@@ -38,6 +41,7 @@ export default class Enemies {
         .filter(([, enemy]) => enemy.isDead)
         .forEach(([key, enemy]) => {
           this.unusedKeys.push(key);
+          this.pool.delete(key);
         });
     
     enemyEntries
@@ -61,6 +65,7 @@ export default class Enemies {
     return {
       createProjectile: (projectile: Projectile) => this.projectiles.create(projectile),
       getPlayers: () => this.players.all,
+      createAmmo: (ammo: Ammo) => this.ammos.create(ammo),
     };
   }
 }

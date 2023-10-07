@@ -13,7 +13,7 @@ function _define_property(obj, key, value) {
 }
 class Wave {
     finished() {
-        return this.currentQuantityOfInstantiatedEnemies > this.maxEnemiesToInstantiate();
+        return this.currentQuantityOfInstantiatedEnemies > this.maxEnemiesToInstantiate() && this.enemies.allAlive.length === 0;
     }
     canInstantiateEnemy() {
         return this.enemies.allAlive.length <= this.maxEnemiesAlive();

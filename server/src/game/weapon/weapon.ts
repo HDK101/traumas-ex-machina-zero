@@ -38,8 +38,8 @@ export default abstract class Weapon {
     this._ammo -= quantity;
   }
 
-  public replenishAmmo(value: number) {
-    this._ammo += value;
+  public replenishAmmo(quantity: number) {
+    this._ammo += quantity;
   }
 
   public shoot(shootParam: ShootParam) {

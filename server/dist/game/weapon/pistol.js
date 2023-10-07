@@ -2,10 +2,9 @@ import Projectile, { ProjectileGroup, ProjectileType } from "../projectile/proje
 import Weapon from "./weapon.js";
 class Pistol extends Weapon {
     rateInSeconds() {
-        return 0.8;
+        return 0.5;
     }
     innerShoot({ position, target }) {
-        console.log("pistol lol");
         this.projectiles.create(new Projectile({
             radius: 16,
             damage: 2,

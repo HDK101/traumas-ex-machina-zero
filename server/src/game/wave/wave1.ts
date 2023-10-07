@@ -4,8 +4,8 @@ import Vector2 from "../vector2.js";
 import Wave from "./wave.js";
 
 export default class Wave1 extends Wave {
-  private rateInSeconds: number = 10;
-  private currentTimeToCreate = 2;
+  private rateInSeconds: number = 1;
+  private currentTimeToCreate = 0;
 
   public minWaveRange(): number {
     return 1;
@@ -22,6 +22,7 @@ export default class Wave1 extends Wave {
       this.createEnemy(new Midwit({
         position: Vector2.from(Math.random() * Room.MAX_WIDTH, Math.random() * Room.MAX_HEIGHT),
       }, this.enemies.createEnemyContext()));
+      this.currentQuantityOfInstantiatedEnemies += 1;
       this.rateInSeconds /= 2;
       this.rateInSeconds = Math.max(this.rateInSeconds, 1);
       this.currentTimeToCreate = 0;
@@ -29,10 +30,10 @@ export default class Wave1 extends Wave {
   }
 
   public maxEnemiesToInstantiate(): number {
-    return 50;
+    return 100;
   }
 
   public maxEnemiesAlive() {
-    return 5;
+    return 50;
   }
 }

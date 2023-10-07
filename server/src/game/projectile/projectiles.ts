@@ -34,7 +34,9 @@ export default class Projectiles {
   public create(projectile: Projectile) {
     if (this.unusedProjectileIds.length === 0) return;
 
-    this.pool.set(this.unusedProjectileIds.shift()!, projectile);
+    const projectileId = this.unusedProjectileIds.shift()!;
+
+    this.pool.set(projectileId, projectile);
   }
 
   public update(deltaTime: number): ProjectilesObject {

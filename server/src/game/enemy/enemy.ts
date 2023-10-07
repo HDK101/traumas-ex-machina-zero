@@ -1,10 +1,14 @@
 import { CreateProjectile } from "../projectile/projectiles.js";
+import { CreateAmmo } from "../ammo/ammos.js";
 import Player from "../player/player.js";
 import Vector2 from "../vector2.js";
+import Ammo from "../ammo/ammo.js";
+import {WeaponList} from "../weapon/weaponList.js";
 
 interface Context {
   createProjectile: CreateProjectile;
   getPlayers: () => Player[];
+  createAmmo: CreateAmmo;
 }
 
 interface EnemyConstructorParam {
@@ -38,6 +42,18 @@ export default abstract class Enemy {
 
   public damage(value: number) {
     this.currentLife -= value;
+
+    if (this.currentLife <= 0) {
+      this.onDeath();
+    }
+  }
+
+  public onDeath() {
+    this.context.createAmmo(new Ammo(
+      this.position.clone(),
+      WeaponList.PISTOL,
+      Math.round(Math.random() * 10) * 5
+    ));
   }
 
   protected abstract start(): void;

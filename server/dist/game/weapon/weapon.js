@@ -19,8 +19,8 @@ class Weapon {
     consumeAmmo(quantity = 1) {
         this._ammo -= quantity;
     }
-    replenishAmmo(value) {
-        this._ammo += value;
+    replenishAmmo(quantity) {
+        this._ammo += quantity;
     }
     shoot(shootParam) {
         if (!this.canShot()) return;

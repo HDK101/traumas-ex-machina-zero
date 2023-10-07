@@ -14,6 +14,7 @@ function _define_property(obj, key, value) {
 class Enemies {
     create(enemy) {
         if (this.unusedKeys.length > 0) {
+            console.log(this.unusedKeys);
             this.pool.set(this.unusedKeys.shift(), enemy);
             return;
         }
@@ -30,6 +31,7 @@ class Enemies {
         });
         enemyEntries.filter(([, enemy])=>enemy.isDead).forEach(([key, enemy])=>{
             this.unusedKeys.push(key);
+            this.pool.delete(key);
         });
         enemyEntries.filter(([, enemy])=>!enemy.isDead).forEach(([key, enemy])=>{
             enemy.update(deltaTime);
@@ -49,17 +51,20 @@ class Enemies {
     createEnemyContext() {
         return {
             createProjectile: (projectile)=>this.projectiles.create(projectile),
-            getPlayers: ()=>this.players.all
+            getPlayers: ()=>this.players.all,
+            createAmmo: (ammo)=>this.ammos.create(ammo)
         };
     }
-    constructor(players, projectiles){
+    constructor(players, projectiles, ammos){
         _define_property(this, "players", void 0);
         _define_property(this, "projectiles", void 0);
+        _define_property(this, "ammos", void 0);
         _define_property(this, "pool", void 0);
         _define_property(this, "currentEnemyId", void 0);
         _define_property(this, "unusedKeys", void 0);
         this.players = players;
         this.projectiles = projectiles;
+        this.ammos = ammos;
         this.pool = new Map();
         this.currentEnemyId = 0;
         this.unusedKeys = [];

@@ -52,8 +52,8 @@ class Projectile {
         _define_property(this, "timeToExpire", 0.0);
         this.radius = radius;
         this.damage = damage;
-        this.position = position;
-        this.velocity = velocity;
+        this.position = position.clone();
+        this.velocity = velocity.clone();
         this.timeToExpire = timeToExpire;
         this.type = type;
         this.group = group;

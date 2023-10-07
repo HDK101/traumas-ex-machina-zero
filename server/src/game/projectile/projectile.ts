@@ -46,8 +46,8 @@ export default class Projectile {
   }: ProjectileConstructor) {
     this.radius = radius;
     this.damage = damage;
-    this.position = position;
-    this.velocity = velocity;
+    this.position = position.clone();
+    this.velocity = velocity.clone();
     this.timeToExpire = timeToExpire;
     this.type = type;
     this.group = group;

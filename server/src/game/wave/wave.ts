@@ -2,13 +2,13 @@ import Enemies from "../enemy/enemies";
 import Enemy from "../enemy/enemy";
 
 export default abstract class Wave {
-  private currentQuantityOfInstantiatedEnemies: number = 0;
+  protected currentQuantityOfInstantiatedEnemies: number = 0;
 
   constructor(protected readonly enemies: Enemies) {
   }
 
   public finished(): boolean {
-    return this.currentQuantityOfInstantiatedEnemies > this.maxEnemiesToInstantiate();
+    return this.currentQuantityOfInstantiatedEnemies > this.maxEnemiesToInstantiate() && this.enemies.allAlive.length === 0;
   }
 
   public canInstantiateEnemy() {

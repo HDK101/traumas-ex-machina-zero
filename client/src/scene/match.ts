@@ -76,7 +76,9 @@ export default class Match extends Scene {
 
   onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data);
-    const { projectiles, players, enemies, player } = data;
+    const { projectiles, players, enemies, player, ammos } = data;
+
+    console.log(enemies);
 
     this.camera.position.x = player.position.x - this.app.renderer.width / 2;
     this.camera.position.y = player.position.y - this.app.renderer.height / 2;

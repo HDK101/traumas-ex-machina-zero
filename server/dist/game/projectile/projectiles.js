@@ -19,7 +19,8 @@ class Projectiles {
     }
     create(projectile) {
         if (this.unusedProjectileIds.length === 0) return;
-        this.pool.set(this.unusedProjectileIds.shift(), projectile);
+        const projectileId = this.unusedProjectileIds.shift();
+        this.pool.set(projectileId, projectile);
     }
     update(deltaTime) {
         const projectilesObject = Object.fromEntries(this.pool);
