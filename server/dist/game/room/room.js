@@ -32,8 +32,14 @@ class Room {
             ammosObject,
             projectilesObject,
             enemiesObject,
-            deltaTime
+            deltaTime,
+            waveInfo: {
+                currentTime: this.waves.waveTime,
+                wave: this.waves.wave,
+                finished: this.waves.noMoreWave
+            }
         });
+        return this.waves.noMoreWave || this.players.all.length === 0;
     }
     constructor(id){
         _define_property(this, "id", void 0);

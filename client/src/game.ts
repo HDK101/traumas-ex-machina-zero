@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js';
 import Match from './scene/match';
+import Rooms from './scene/rooms';
 import Scene from './scene/scene';
 
 export default class Game {
@@ -11,7 +12,7 @@ export default class Game {
     this.app = app;
     this.webSocket = webSocket;
 
-    this.changeScene(Match);
+    this.changeScene(Rooms);
 
     this.webSocket.addEventListener("open", (event) => {
       this.currentScene.onConnect();

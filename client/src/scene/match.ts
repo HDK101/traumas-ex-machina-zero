@@ -7,6 +7,7 @@ import Projectiles from '../projectile/projectiles';
 import Vector2 from '../vector2';
 import {Weapon} from '../weapon/weapon';
 import Ammos from "../ammo/ammos";
+import Rooms from "./rooms";
 
 export default class Match extends Scene {
   private shooting = false;
@@ -79,9 +80,18 @@ export default class Match extends Scene {
 
   onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data);
-    const { projectiles, players, enemies, player, ammos } = data;
+    const { projectiles, players, enemies, player, ammos, wave } = data;
 
-    console.log(enemies);
+    console.log(player);
+
+    if (wave.finished || player.deathElapsedTime > 5) {
+      this.game.changeScene(Rooms);
+      return;
+    }
+
+    if (wave.currentTime <= 1) {
+      this.showText(`Wave ${wave.wave} started!`, 5);
+    }
 
     this.camera.position.x = player.position.x - this.app.renderer.width / 2;
     this.camera.position.y = player.position.y - this.app.renderer.height / 2;
@@ -150,7 +160,6 @@ export default class Match extends Scene {
     this.projectiles.render();
     this.enemies.render();
     this.players.render();
-    this.ammos.render();
   }
 
   showText(text: string, life: number) {

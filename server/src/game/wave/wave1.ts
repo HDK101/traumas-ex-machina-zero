@@ -12,7 +12,7 @@ export default class Wave1 extends Wave {
   }
 
   public maxWaveRange(): number {
-    return 3;
+    return 1;
   }
 
   public update(deltaTime: number): void {
@@ -30,10 +30,15 @@ export default class Wave1 extends Wave {
   }
 
   public maxEnemiesToInstantiate(): number {
-    return 100;
+    return 10;
   }
 
   public maxEnemiesAlive() {
-    return 50;
+    return 2;
+  }
+
+  public override reset() {
+    super.reset(); this.currentTimeToCreate = 0;
+    this.rateInSeconds = 1;
   }
 }

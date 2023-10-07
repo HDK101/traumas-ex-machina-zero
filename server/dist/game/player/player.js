@@ -18,6 +18,10 @@ import SMG from "../weapon/smg.js";
 import { WeaponList } from "../weapon/weaponList.js";
 class Player {
     update(deltaTime) {
+        if (this.life <= 0) {
+            this._deathElapsedTime += deltaTime;
+            return;
+        }
         if (this.shooting) {
             this.selectedWeapon.shoot({
                 position: this.position.clone(),
@@ -38,7 +42,8 @@ class Player {
             id: this.id,
             position: this.position,
             velocity: this.velocity,
-            radius: this.radius
+            radius: this.radius,
+            deathElapsedTime: this.deathElapsedTime
         };
     }
     get squaredRadius() {
@@ -53,6 +58,9 @@ class Player {
     get projectiles() {
         return this._projectiles;
     }
+    get deathElapsedTime() {
+        return this._deathElapsedTime;
+    }
     changeWeapon(weaponId) {
         if (this.currentWeaponId == weaponId) return;
         this.currentWeaponId = weaponId;
@@ -65,7 +73,7 @@ class Player {
         _define_property(this, "id", void 0);
         _define_property(this, "position", void 0);
         _define_property(this, "velocity", void 0);
-        _define_property(this, "life", 100);
+        _define_property(this, "life", 10);
         _define_property(this, "shooting", false);
         _define_property(this, "target", void 0);
         _define_property(this, "_projectiles", void 0);
@@ -76,6 +84,7 @@ class Player {
         _define_property(this, "pistol", void 0);
         _define_property(this, "shotgun", void 0);
         _define_property(this, "smg", void 0);
+        _define_property(this, "_deathElapsedTime", 0);
         _define_property(this, "weapons", new Map());
         _define_property(this, "weaponAssociation", void 0);
         this.id = id;

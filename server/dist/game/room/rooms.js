@@ -27,8 +27,13 @@ class Rooms {
         this.rooms.forEach((room)=>roomList.push(room));
         return roomList;
     }
-    forEach(fn) {
-        this.rooms.forEach(fn);
+    update(deltaTime) {
+        [
+            ...this.rooms.entries()
+        ].forEach(([key, room])=>{
+            const finished = room.tick(deltaTime);
+            if (finished) this.rooms.delete(key);
+        });
     }
     constructor(){
         _define_property(this, "rooms", void 0);

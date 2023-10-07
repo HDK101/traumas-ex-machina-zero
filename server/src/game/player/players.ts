@@ -1,8 +1,7 @@
 import {AmmosObject} from "../ammo/ammos";
 import {EnemiesObject} from "../enemy/enemies";
 import Projectiles, {ProjectilesObject} from "../projectile/projectiles";
-import Vector2 from "../vector2";
-import Player from "./player";
+import Vector2 from "../vector2"; import Player from "./player";
 import {PlayerConnection} from "./playerConnection";
 
 interface PlayersObject { [key: string]: Player}
@@ -17,17 +16,27 @@ export default class Players {
     projectilesObject,
     enemiesObject,
     deltaTime,
+    waveInfo,
   }: {
     ammosObject: AmmosObject;
     projectilesObject: ProjectilesObject;
     enemiesObject: EnemiesObject;
     deltaTime: number;
+    waveInfo: {
+      wave: number;
+      currentTime: number;
+      finished: boolean;
+    };
   }) {
     const playersObject = this.retrievePlayersAsObject();
 
     this.pool.forEach(playerConnection => {
       const player = playerConnection.player;
       const socket = playerConnection.socket;
+
+      if (player.deathElapsedTime > 6) {
+        playerConnection.handler.exitRoom();
+      }
 
       player.update(deltaTime);
 
@@ -37,6 +46,7 @@ export default class Players {
         projectiles: projectilesObject,
         enemies: enemiesObject,
         ammos: ammosObject,
+        wave: waveInfo,
       }));
     });
   }

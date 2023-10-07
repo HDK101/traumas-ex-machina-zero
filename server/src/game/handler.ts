@@ -29,6 +29,7 @@ export default class WebSocketClientHandler {
 
     this.playerConnection = {
       socket: webSocket,
+      handler: this,
       player: this.player,
     };
 
@@ -59,6 +60,10 @@ export default class WebSocketClientHandler {
   public enterRoomById(id: number) {
     this.inRoom = this.rooms.retrieve(id);
     this.inRoom?.players.addPlayer(this.playerConnection);
+  }
+
+  public exitRoom() {
+    this.inRoom?.players.removePlayer(this.playerId);
   }
 
   public getCurrentRoom() {

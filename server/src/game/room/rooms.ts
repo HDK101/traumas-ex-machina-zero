@@ -30,7 +30,11 @@ export default class Rooms {
     return roomList;
   }
 
-  forEach(fn: (room: Room) => void) {
-    this.rooms.forEach(fn);
+  update(deltaTime: number) {
+    [...this.rooms.entries()].forEach(([key, room]) => { 
+      const finished = room.tick(deltaTime);
+      if (finished)
+        this.rooms.delete(key);
+    });
   }
 }

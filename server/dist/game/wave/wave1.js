@@ -20,7 +20,7 @@ class Wave1 extends Wave {
         return 1;
     }
     maxWaveRange() {
-        return 3;
+        return 1;
     }
     update(deltaTime) {
         this.currentTimeToCreate += deltaTime;
@@ -35,10 +35,15 @@ class Wave1 extends Wave {
         }
     }
     maxEnemiesToInstantiate() {
-        return 100;
+        return 10;
     }
     maxEnemiesAlive() {
-        return 50;
+        return 2;
+    }
+    reset() {
+        super.reset();
+        this.currentTimeToCreate = 0;
+        this.rateInSeconds = 1;
     }
     constructor(...args){
         super(...args);

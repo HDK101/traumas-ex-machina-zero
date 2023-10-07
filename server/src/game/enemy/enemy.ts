@@ -51,7 +51,7 @@ export default abstract class Enemy {
   public onDeath() {
     this.context.createAmmo(new Ammo(
       this.position.clone(),
-      WeaponList.PISTOL,
+      Math.floor(Math.random() * 3),
       Math.round(Math.random() * 10) * 5
     ));
   }

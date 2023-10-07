@@ -8,11 +8,11 @@ export default abstract class Wave {
   }
 
   public finished(): boolean {
-    return this.currentQuantityOfInstantiatedEnemies > this.maxEnemiesToInstantiate() && this.enemies.allAlive.length === 0;
+    return this.currentQuantityOfInstantiatedEnemies >= this.maxEnemiesToInstantiate() && this.enemies.allAlive.length === 0;
   }
 
   public canInstantiateEnemy() {
-    return this.enemies.allAlive.length <= this.maxEnemiesAlive();
+    return this.enemies.allAlive.length <= this.maxEnemiesAlive() && this.currentQuantityOfInstantiatedEnemies < this.maxEnemiesToInstantiate();
   }
 
   public abstract maxEnemiesAlive(): number;
@@ -24,6 +24,10 @@ export default abstract class Wave {
   public abstract update(deltaTime: number): void;
   
   public abstract maxEnemiesToInstantiate(): number;
+
+  public reset() {
+    this.currentQuantityOfInstantiatedEnemies = 0;
+  }
 
   protected createEnemy(enemy: Enemy) {
     this.enemies.create(enemy)

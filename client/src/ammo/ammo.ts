@@ -1,26 +1,20 @@
+import {Sprite} from "pixi.js";
 import Camera from "../camera/camera";
-import Polygon from "../polygon";
-import Vector2, {RawVector2} from "../vector2";
+import {RawVector2} from "../vector2";
 
 export default class Ammo {
-  public readonly polygon: Polygon;
+  public readonly pistolBox: Sprite
   public position: RawVector2 = { x: 0, y: 0 };
 
   constructor(private readonly camera: Camera) {
-    this.polygon = new Polygon({
-      radius: 16,
-      points: 5,
-      pointWobbleIntensity: 1,
-      camera,
-    });
+    this.pistolBox = Sprite.from('src/assets/pistolbox.png');
   }
 
   update(deltaTime: number) {
-    this.polygon.update(deltaTime);
-    this.polygon.position = Vector2.from(this.position.x, this.position.y);
-  }
-
-  render() {
-    this.polygon.render();
+    this.pistolBox.position = this.position;
+    this.pistolBox.position.x -= this.camera.position.x;
+    this.pistolBox.position.y -= this.camera.position.y;
+    this.pistolBox.position.x -= 16;
+    this.pistolBox.position.y -= 16;
   }
 }

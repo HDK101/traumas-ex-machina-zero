@@ -12,18 +12,22 @@ function _define_property(obj, key, value) {
     return obj;
 }
 class Players {
-    update({ ammosObject, projectilesObject, enemiesObject, deltaTime }) {
+    update({ ammosObject, projectilesObject, enemiesObject, deltaTime, waveInfo }) {
         const playersObject = this.retrievePlayersAsObject();
         this.pool.forEach((playerConnection)=>{
             const player = playerConnection.player;
             const socket = playerConnection.socket;
+            if (player.deathElapsedTime > 6) {
+                playerConnection.handler.exitRoom();
+            }
             player.update(deltaTime);
             socket.send(JSON.stringify({
                 player: player.formatted(),
                 players: playersObject,
                 projectiles: projectilesObject,
                 enemies: enemiesObject,
-                ammos: ammosObject
+                ammos: ammosObject,
+                wave: waveInfo
             }));
         });
     }

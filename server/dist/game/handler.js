@@ -19,6 +19,9 @@ class WebSocketClientHandler {
         this.inRoom = this.rooms.retrieve(id);
         this.inRoom?.players.addPlayer(this.playerConnection);
     }
+    exitRoom() {
+        this.inRoom?.players.removePlayer(this.playerId);
+    }
     getCurrentRoom() {
         return this.inRoom;
     }
@@ -42,6 +45,7 @@ class WebSocketClientHandler {
         });
         this.playerConnection = {
             socket: webSocket,
+            handler: this,
             player: this.player
         };
         Object.values(rawHandlers).forEach((rawHandler)=>{

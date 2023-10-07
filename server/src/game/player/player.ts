@@ -11,7 +11,7 @@ export default class Player {
   id: number;
   position: Vector2;
   velocity: Vector2;
-  life: number = 100;
+  life: number = 10;
 
   shooting: boolean = false;
 
@@ -27,6 +27,7 @@ export default class Player {
   private pistol: Pistol;
   private shotgun: Shotgun;
   private smg: SMG;
+  private _deathElapsedTime = 0;
 
   private weapons: Map<WeaponList, Weapon> = new Map();
 
@@ -66,6 +67,11 @@ export default class Player {
   }
 
   public update(deltaTime: number) {
+    if (this.life <= 0) { 
+      this._deathElapsedTime += deltaTime;
+      return;
+    };
+
     if (this.shooting) {
       this.selectedWeapon.shoot({
         position: this.position.clone(),
@@ -92,6 +98,7 @@ export default class Player {
       position: this.position,
       velocity: this.velocity,
       radius: this.radius,
+      deathElapsedTime: this.deathElapsedTime,
     };
   }
 
@@ -109,6 +116,10 @@ export default class Player {
 
   public get projectiles(): Projectiles {
     return this._projectiles;
+  }
+
+  public get deathElapsedTime() {
+    return this._deathElapsedTime;
   }
 
   public changeWeapon(weaponId: number) {

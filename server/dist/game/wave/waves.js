@@ -17,6 +17,7 @@ class Waves {
         this.currentWave.update(deltaTime);
         this._waveTime += deltaTime;
         if (this.currentWave.finished()) {
+            console.log('finished');
             this.next();
         }
     }
@@ -26,10 +27,18 @@ class Waves {
     get waveTime() {
         return this._waveTime;
     }
+    get noMoreWave() {
+        return this._noMoreWave;
+    }
     next() {
         this._wave += 1;
         const waveInRange = this.waves.filter((wave)=>this._wave >= wave.minWaveRange() && this._wave <= wave.maxWaveRange());
+        if (waveInRange.length === 0) {
+            this._noMoreWave = true;
+            return;
+        }
         this.currentWave = waveInRange[0];
+        this.currentWave.reset();
         this._waveTime = 0;
     }
     constructor(enemies){
@@ -37,7 +46,8 @@ class Waves {
         _define_property(this, "currentWave", void 0);
         _define_property(this, "waves", void 0);
         _define_property(this, "_waveTime", 0);
-        this._wave = 1;
+        _define_property(this, "_noMoreWave", false);
+        this._wave = 0;
         this.waves = [
             new Wave1(enemies)
         ];

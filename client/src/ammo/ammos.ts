@@ -1,4 +1,4 @@
-import {Container} from "pixi.js";
+import {Container, Sprite} from "pixi.js";
 import Camera from "../camera/camera";
 import Ammo from "./ammo";
 
@@ -18,7 +18,7 @@ export default class Ammos {
       const rawAmmo = rawAmmos[key];
       if (!rawAmmo) {
         if (this.pool.has(key)) {
-          this.stage.removeChild(this.pool.get(key)!.polygon.graphics);
+          this.stage.removeChild(this.pool.get(key)!.pistolBox);
           this.pool.delete(key);
         }
         return;
@@ -29,7 +29,6 @@ export default class Ammos {
       }
       const ammo = this.pool.get(key)!;
       ammo.position = rawAmmo.position;
-      ammo.polygon.enabled = true;
     });
   }
 
@@ -37,13 +36,9 @@ export default class Ammos {
     this.pool.forEach(ammo => ammo.update(deltaTime));
   }
 
-  render() {
-    this.pool.forEach(ammo => ammo.render());
-  }
-
   private putAmmo(key: string, rawAmmo: any) {
     const ammo = new Ammo(this.camera);
-    this.stage.addChild(ammo.polygon.graphics);
+    this.stage.addChild(ammo.pistolBox);
     this.pool.set(key, ammo);
     ammo.position = rawAmmo.position;
   }

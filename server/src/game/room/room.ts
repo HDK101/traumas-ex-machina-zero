@@ -47,7 +47,14 @@ export default class Room {
       projectilesObject,
       enemiesObject,
       deltaTime,
+      waveInfo: {
+        currentTime: this.waves.waveTime,
+        wave: this.waves.wave,
+        finished: this.waves.noMoreWave,
+      },
     });
+
+    return this.waves.noMoreWave || this.players.all.length === 0;
   }
 }
 

@@ -16,7 +16,7 @@ import WebSocketClientHandler from "./handler.js";
 import Rooms from "./room/rooms.js";
 class Server {
     tick() {
-        this.rooms.forEach((room)=>room.tick(1 / this.ticksPerSecond));
+        this.rooms.update(1 / this.ticksPerSecond);
     }
     process() {
         this.oldPerformanceNow = this.performanceNow;

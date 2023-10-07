@@ -8,11 +8,12 @@ export default class Waves {
   private currentWave!: Wave;
 
   private waves: Wave[];
-
   private _waveTime: number = 0;
 
+  private _noMoreWave = false;
+
   constructor(enemies: Enemies) {
-    this._wave = 1;
+    this._wave = 0;
     this.waves = [
       new Wave1(enemies),
     ];
@@ -24,6 +25,7 @@ export default class Waves {
     this._waveTime += deltaTime;
 
     if (this.currentWave.finished()) {
+      console.log('finished');
       this.next();
     }
   }
@@ -36,10 +38,19 @@ export default class Waves {
     return this._waveTime;
   }
 
+  public get noMoreWave() {
+    return this._noMoreWave;
+  }
+
   private next() {
     this._wave += 1;
     const waveInRange = this.waves.filter(wave => this._wave >= wave.minWaveRange() && this._wave <= wave.maxWaveRange());
+    if (waveInRange.length === 0) {
+      this._noMoreWave = true;
+      return;
+    }
     this.currentWave = waveInRange[0];
+    this.currentWave.reset()
     this._waveTime = 0;
   }
 }

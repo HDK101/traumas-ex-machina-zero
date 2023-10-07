@@ -13,10 +13,13 @@ function _define_property(obj, key, value) {
 }
 class Wave {
     finished() {
-        return this.currentQuantityOfInstantiatedEnemies > this.maxEnemiesToInstantiate() && this.enemies.allAlive.length === 0;
+        return this.currentQuantityOfInstantiatedEnemies >= this.maxEnemiesToInstantiate() && this.enemies.allAlive.length === 0;
     }
     canInstantiateEnemy() {
-        return this.enemies.allAlive.length <= this.maxEnemiesAlive();
+        return this.enemies.allAlive.length <= this.maxEnemiesAlive() && this.currentQuantityOfInstantiatedEnemies < this.maxEnemiesToInstantiate();
+    }
+    reset() {
+        this.currentQuantityOfInstantiatedEnemies = 0;
     }
     createEnemy(enemy) {
         this.enemies.create(enemy);
