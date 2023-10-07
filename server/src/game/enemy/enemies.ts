@@ -18,7 +18,6 @@ export default class Enemies {
 
   public create(enemy: Enemy) {
     if (this.unusedKeys.length > 0) {
-      console.log(this.unusedKeys);
       this.pool.set(this.unusedKeys.shift()!, enemy);
       return;
     }
