@@ -6,6 +6,7 @@ import Players from '../player/players';
 import Projectiles from '../projectile/projectiles';
 import Vector2 from '../vector2';
 import {Weapon} from '../weapon/weapon';
+import Ammos from "../ammo/ammos";
 
 export default class Match extends Scene {
   private shooting = false;
@@ -23,6 +24,7 @@ export default class Match extends Scene {
   private projectiles!: Projectiles;
   private enemies!: Enemies;
   private players!: Players;
+  private ammos!: Ammos;
 
   private weaponId: Weapon = Weapon.PISTOL;
   
@@ -53,6 +55,7 @@ export default class Match extends Scene {
     this.projectiles = new Projectiles(this.container, this.camera);
     this.enemies = new Enemies(this.container, this.camera);
     this.players = new Players(this.container, this.camera);
+    this.ammos = new Ammos(this.container, this.camera);
 
     this.middleText = new PIXI.Text('Game Over', {
       fontFamily: 'Arial',
@@ -88,6 +91,7 @@ export default class Match extends Scene {
     this.players.onMessage(players);
     this.projectiles.onMessage(projectiles);
     this.enemies.onMessage(enemies);
+    this.ammos.onMessage(ammos);
   }
 
   update(deltaTime: number) {
@@ -131,6 +135,7 @@ export default class Match extends Scene {
     this.players.update(deltaTime);
     this.enemies.update(deltaTime);
     this.projectiles.update(deltaTime);
+    this.ammos.update(deltaTime);
 
     this.draw();
   }
@@ -145,6 +150,7 @@ export default class Match extends Scene {
     this.projectiles.render();
     this.enemies.render();
     this.players.render();
+    this.ammos.render();
   }
 
   showText(text: string, life: number) {

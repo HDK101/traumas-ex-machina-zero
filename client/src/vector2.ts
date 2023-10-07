@@ -1,3 +1,8 @@
+export interface RawVector2 {
+  x: number;
+  y: number;
+}
+
 export default class Vector2 {
   constructor(public x: number, public y: number) {}
 
