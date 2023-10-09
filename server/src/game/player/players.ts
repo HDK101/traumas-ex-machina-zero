@@ -28,14 +28,17 @@ export default class Players {
       finished: boolean;
     };
   }) {
+    console.log(this.pool);
     const playersObject = this.retrievePlayersAsObject();
 
-    this.pool.forEach(playerConnection => {
+    [...this.pool.entries()].forEach(([key, playerConnection]) => {
       const player = playerConnection.player;
       const socket = playerConnection.socket;
 
-      if (player.deathElapsedTime > 6) {
+      if (player.deathElapsedTime > 5) {
         playerConnection.handler.exitRoom();
+        this.removePlayer(key);
+        return;
       }
 
       player.update(deltaTime);
@@ -63,6 +66,7 @@ export default class Players {
 
   public addPlayer(playerConnection: PlayerConnection): void {
     playerConnection.player.projectiles = this.projectiles;
+    playerConnection.player.reset();
     this.pool.set(playerConnection.player.id, playerConnection);
   }
 

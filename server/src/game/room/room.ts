@@ -5,6 +5,7 @@ import Waves from "../wave/waves.js";
 import Ammos from "../ammo/ammos.js";
 
 export default class Room {
+  public timeElapsed = 0.0;
   public projectiles: Projectiles;
   public players: Players;
   public enemies: Enemies;
@@ -32,10 +33,13 @@ export default class Room {
     return {
       id: this.id,
       players: this.players.all,
+      wave: this.waves.wave,
     };
   }
 
   public tick(deltaTime: number) {
+    this.timeElapsed += deltaTime;
+
     const projectilesObject = this.projectiles.update(deltaTime);
     const enemiesObject = this.enemies.update(deltaTime);
     const ammosObject = this.ammos.update(deltaTime);
@@ -54,7 +58,7 @@ export default class Room {
       },
     });
 
-    return this.waves.noMoreWave || this.players.all.length === 0;
+    return this.waves.noMoreWave || (this.players.all.length === 0 && this.timeElapsed > 5);
   }
 }
 

@@ -38,6 +38,12 @@ export default class Match extends Scene {
 
   private level!: PIXI.Graphics;
 
+  private ammoText!: PIXI.Text;
+
+  private pistolSprite!: PIXI.Sprite;
+  private smgSprite!: PIXI.Sprite;
+  private shotgunSprite!: PIXI.Sprite;
+
   init() {
     this.playerLifeBar = new PIXI.Graphics();
 
@@ -69,6 +75,18 @@ export default class Match extends Scene {
     this.container.addChild(this.middleText);
 
     this.showText("Game Over", 5.0);
+
+    this.ammoText = new PIXI.Text('', {
+      fill: 'ffffff',
+    });
+    this.pistolSprite = PIXI.Sprite.from('src/assets/pistol.png');
+    this.smgSprite = PIXI.Sprite.from('src/assets/smg.png');
+    this.shotgunSprite = PIXI.Sprite.from('src/assets/shotgun.png');
+
+    this.container.addChild(this.pistolSprite);
+    this.container.addChild(this.smgSprite);
+    this.container.addChild(this.shotgunSprite);
+    this.container.addChild(this.ammoText);
   }
 
   onConnect() {
@@ -82,9 +100,31 @@ export default class Match extends Scene {
     const data = JSON.parse(event.data);
     const { projectiles, players, enemies, player, ammos, wave } = data;
 
-    console.log(player);
+    if (player.weaponId === 1) {
+      this.pistolSprite.visible = true;
+      this.smgSprite.visible = false;
+      this.shotgunSprite.visible = false;
+    }
+    if (player.weaponId === 2) {
+      this.pistolSprite.visible = false;
+      this.smgSprite.visible = true;
+      this.shotgunSprite.visible = false;
+    }
+    if (player.weaponId === 3) {
+      this.pistolSprite.visible = false;
+      this.smgSprite.visible = false;
+      this.shotgunSprite.visible = true;
+    }
 
-    if (wave.finished || player.deathElapsedTime > 5) {
+    if (player.deathElapsedTime > 0) {
+      this.showText('Game Over', 5);
+    }
+    if (player.deathElapsedTime > 5) {
+      this.game.changeScene(Rooms);
+      return;
+    }
+
+    if (wave.finished) {
       this.game.changeScene(Rooms);
       return;
     }
@@ -111,6 +151,20 @@ export default class Match extends Scene {
     this.level.position.y = -this.camera.position.y;
     this.middleText.position.x = this.app.renderer.width / 2;
     this.middleText.position.y = this.app.renderer.height / 2;
+
+    this.ammoText.text = `${this.currentPlayer.currentAmmo}/${this.currentPlayer.maxAmmo}`;
+
+    this.pistolSprite.position.x = 32;
+    this.pistolSprite.position.y = this.app.renderer.height - 128;
+
+    this.smgSprite.position.x = 32;
+    this.smgSprite.position.y = this.app.renderer.height - 128;
+
+    this.shotgunSprite.position.x = 32;
+    this.shotgunSprite.position.y = this.app.renderer.height - 128;
+
+    this.ammoText.position.x = 32;
+    this.ammoText.position.y = this.app.renderer.height - 64;
 
     const calculatedMousePosition = this.mousePosition.clone();
 
@@ -153,7 +207,7 @@ export default class Match extends Scene {
   draw() {
     if (this.currentPlayer) {
       this.playerLifeBar.clear();
-      this.playerLifeBar.beginFill(0xFFFF00);
+      this.playerLifeBar.beginFill(0xFF0000);
       this.playerLifeBar.drawRect(16, 1, 100 * (this.currentPlayer?.life / 100), 32);
     }
 

@@ -43,7 +43,11 @@ class Player {
             position: this.position,
             velocity: this.velocity,
             radius: this.radius,
-            deathElapsedTime: this.deathElapsedTime
+            deathElapsedTime: this.deathElapsedTime,
+            weaponId: this.currentWeaponId,
+            life: this.life,
+            currentAmmo: this.selectedWeapon.ammo,
+            maxAmmo: this.selectedWeapon.maxAmmo
         };
     }
     get squaredRadius() {
@@ -68,6 +72,11 @@ class Player {
     }
     gainAmmo(ammo) {
         this.weapons.get(ammo.weapon).replenishAmmo(ammo.quantity);
+    }
+    reset() {
+        this.life = 10;
+        this._deathElapsedTime = 0;
+        this.position = Vector2.zero();
     }
     constructor({ id, position }){
         _define_property(this, "id", void 0);

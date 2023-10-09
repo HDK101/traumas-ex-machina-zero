@@ -18,9 +18,11 @@ class Weapon {
     }
     consumeAmmo(quantity = 1) {
         this._ammo -= quantity;
+        this._ammo = Math.max(this._ammo, 0);
     }
     replenishAmmo(quantity) {
         this._ammo += quantity;
+        this._ammo = Math.min(this._ammo, this.maxAmmo);
     }
     shoot(shootParam) {
         if (!this.canShot()) return;

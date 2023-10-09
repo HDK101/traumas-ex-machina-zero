@@ -20,7 +20,7 @@ class WebSocketClientHandler {
         this.inRoom?.players.addPlayer(this.playerConnection);
     }
     exitRoom() {
-        this.inRoom?.players.removePlayer(this.playerId);
+        this.inRoom = null;
     }
     getCurrentRoom() {
         return this.inRoom;

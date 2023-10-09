@@ -1,7 +1,6 @@
 import Player from "./player/player.js";
 import { PlayerConnection } from "./player/playerConnection.js";
-import { PlayerMessage } from "./player/playerMessage.js";
-import WebSocket from "ws";
+import { PlayerMessage } from "./player/playerMessage.js"; import WebSocket from "ws";
 import Room from "./room/room.js";
 import Rooms from "./room/rooms.js";
 import {HandlerFunction} from "./handler/messageHandler/HandlerFunction.js";
@@ -63,7 +62,7 @@ export default class WebSocketClientHandler {
   }
 
   public exitRoom() {
-    this.inRoom?.players.removePlayer(this.playerId);
+    this.inRoom = null;
   }
 
   public getCurrentRoom() {

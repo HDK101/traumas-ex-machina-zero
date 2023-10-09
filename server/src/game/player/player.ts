@@ -99,6 +99,10 @@ export default class Player {
       velocity: this.velocity,
       radius: this.radius,
       deathElapsedTime: this.deathElapsedTime,
+      weaponId: this.currentWeaponId,
+      life: this.life,
+      currentAmmo: this.selectedWeapon.ammo,
+      maxAmmo: this.selectedWeapon.maxAmmo,
     };
   }
 
@@ -131,6 +135,12 @@ export default class Player {
 
   public gainAmmo(ammo: Ammo) {
     this.weapons.get(ammo.weapon)!.replenishAmmo(ammo.quantity);
+  }
+
+  public reset() {
+    this.life = 10;
+    this._deathElapsedTime = 0;
+    this.position = Vector2.zero();
   }
 }
 

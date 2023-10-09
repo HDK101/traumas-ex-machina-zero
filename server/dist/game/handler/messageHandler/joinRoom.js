@@ -1,6 +1,5 @@
 function joinRoom(webSocketClientHandler) {
     return (playerMessage)=>{
-        console.log(playerMessage);
         webSocketClientHandler.enterRoomById(playerMessage.roomId);
     };
 }

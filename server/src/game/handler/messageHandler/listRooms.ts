@@ -5,6 +5,7 @@ import {MessageHandler} from "./MessageHandler";
 function listRooms(webSocketClientHandler: WebSocketClientHandler) {
   return (playerMessage: PlayerMessage) => {
     webSocketClientHandler.playerConnection.socket.send(JSON.stringify({
+      type: 'LIST_ROOMS',
       rooms: webSocketClientHandler.rooms.retrieveAll()?.map(room => room.formatted()),
     }));
   };

@@ -36,10 +36,12 @@ export default abstract class Weapon {
 
   public consumeAmmo(quantity: number = 1) {
     this._ammo -= quantity;
+    this._ammo = Math.max(this._ammo, 0);
   }
 
   public replenishAmmo(quantity: number) {
     this._ammo += quantity;
+    this._ammo = Math.min(this._ammo, this.maxAmmo);
   }
 
   public shoot(shootParam: ShootParam) {

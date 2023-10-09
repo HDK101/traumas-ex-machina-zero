@@ -13,7 +13,6 @@ export default class Ammos {
   }
 
   onMessage(rawAmmos: any) {
-    console.log(rawAmmos);
     this.keys.forEach(key => {
       const rawAmmo = rawAmmos[key];
       if (!rawAmmo) {
