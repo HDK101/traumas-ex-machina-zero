@@ -1,7 +1,12 @@
+import crypto from 'node:crypto';
 import Session from "../model/Session";
 import User from "../model/User";
 
-async function store(ctx) {
+function createKey() {
+    return crypto.createHash('sha256').update(crypto.randomUUID()).digest("hex");
+}
+
+export async function store(ctx) {
     const { login, password } = ctx.request.body;
 
     const user = await User.findOne({
@@ -13,8 +18,16 @@ async function store(ctx) {
 
     if (!user) throw new Error();
 
+    console.log(createKey());
+
     const session = await Session.create({
-        publicKey: 'asd',
-        privateKey: 'asd',
+        publicKey: createKey(),
+        privateKey: createKey(),
     });
+
+    await user.addSession(session);
+
+    ctx.body = {
+        publicKey: session.publicKey,
+    }
 }
