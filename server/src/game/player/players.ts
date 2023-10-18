@@ -28,7 +28,6 @@ export default class Players {
       finished: boolean;
     };
   }) {
-    console.log(this.pool);
     const playersObject = this.retrievePlayersAsObject();
 
     [...this.pool.entries()].forEach(([key, playerConnection]) => {

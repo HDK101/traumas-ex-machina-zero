@@ -1,10 +1,8 @@
 import * as PIXI from 'pixi.js';
-import { Button } from '@pixi/ui';
 import Game from './game';
-import Polygon from './polygon';
 
 import './style.css'
-import {Container, DisplayObject} from 'pixi.js';
+import {DisplayObject} from 'pixi.js';
 
 const app = new PIXI.Application({
   resizeTo: window,
@@ -14,11 +12,6 @@ const app = new PIXI.Application({
 
 const container = new PIXI.Container();
 app.stage.addChild(container);
-const button = new Button(
-      new PIXI.Graphics()
-          .beginFill(0xFFFFFF)
-          .drawRoundedRect(0, 0, 100, 50, 15)
-);
 
 const displayObject = (app.stage) as DisplayObject;
 // container.addChild(button.view);

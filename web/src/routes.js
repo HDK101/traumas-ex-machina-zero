@@ -9,5 +9,9 @@ router.get('/login', LoginController.login);
 router.get('/register', UserController.register);
 router.post('/sessions', SessionController.store);
 router.post('/users', UserController.store);
+router.get('/users', UserController.index);
+router.get('(.*)', (ctx) => {
+    ctx.redirect('/login');
+});
 
 export default router;

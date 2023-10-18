@@ -6,23 +6,45 @@ import Scene from './scene/scene';
 export default class Game {
   private app: PIXI.Application;
   private webSocket: WebSocket;
+  private backendWebSocket!: WebSocket;
   private currentScene!: Scene;
+  private privateKey!: string;
 
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
     this.app = app;
     this.webSocket = webSocket;
+    this.backendWebSocket = new WebSocket('ws://localhost:8080');
 
-    this.changeScene(Match);
+    this.backendWebSocket.addEventListener("open", event => {
+      const urlParams = new URLSearchParams(window.location.search);
 
+      console.log(urlParams.get('publicKey'));
+
+      this.backendWebSocket.send(JSON.stringify({
+        publicKey: urlParams.get('publicKey'),
+      }));
+
+      this.backendWebSocket.addEventListener("message", event => {
+        const { privateKey, type, success } = JSON.parse(event.data);
+
+        if (type !== 'PRIVATE_KEY') return;
+
+        if (!success) window.location.href = "http://localhost:3000";
+
+        this.privateKey = privateKey;
+      });
+    });
+
+    
     this.webSocket.addEventListener("open", (event) => {
-      this.currentScene.onConnect();
-
       this.webSocket.addEventListener("message", (event) => this.onMessage(event));
-
+      
       this.app.ticker.add((deltaTime: number) => {
         this.update(deltaTime);
         this.draw();
       });
+      
+      this.changeScene(Rooms);
     });
   }
 
@@ -35,6 +57,10 @@ export default class Game {
   }
 
   onMessage(event: MessageEvent) {
+    const data = JSON.parse(event.data);
+
+    console.log(data);
+
     this.currentScene.onMessage(event);
   }
 

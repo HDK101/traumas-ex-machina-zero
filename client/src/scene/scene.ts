@@ -16,7 +16,6 @@ export default abstract class Scene {
   abstract update(deltaTime: number): void;
   abstract draw(): void;
   abstract onMessage(event: MessageEvent): void;
-  abstract onConnect(): void;
   abstract input(): void;
   abstract destroyInput(): void;
   abstract getContainer(): PIXI.Container;

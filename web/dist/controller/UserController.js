@@ -9,6 +9,9 @@ function _export(target, all) {
     });
 }
 _export(exports, {
+    index: function() {
+        return index;
+    },
     register: function() {
         return register;
     },
@@ -21,6 +24,11 @@ function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
     };
+}
+function index(ctx) {
+    return ctx.render('user', {
+        publicKey: ctx.session.publicKey
+    });
 }
 async function store(ctx) {
     console.log(ctx.request.body);

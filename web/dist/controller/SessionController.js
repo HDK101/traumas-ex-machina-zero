@@ -28,14 +28,13 @@ async function store(ctx) {
         }
     });
     if (!user) throw new Error();
-    console.log(createKey());
     const session = await _Session.default.create({
         publicKey: createKey(),
         privateKey: createKey()
     });
     await user.addSession(session);
-    console.log(await _Session.default.findAll());
-    ctx.body = {
+    ctx.session = {
         publicKey: session.publicKey
     };
+    ctx.redirect('/users');
 }

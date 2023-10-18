@@ -17,6 +17,7 @@ function _interop_require_default(obj) {
 }
 const Session = _database.default.define('Session', {
     publicKey: _sequelize.DataTypes.STRING,
-    privateKey: _sequelize.DataTypes.STRING
+    privateKey: _sequelize.DataTypes.STRING,
+    used: _sequelize.DataTypes.BOOLEAN
 });
 const _default = Session;

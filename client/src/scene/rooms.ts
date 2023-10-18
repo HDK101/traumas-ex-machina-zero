@@ -9,20 +9,14 @@ export default class Rooms extends Scene {
   init() {
     this.container = new PIXI.Container();
 
-
     this.webSocket.send(JSON.stringify({
       type: 'LIST_ROOMS',
     }));
   }
 
-  onConnect() {
-  }
-
   onMessage(event: MessageEvent) {
     const message = JSON.parse(event.data);
 
-    console.log(message);
-    
     if (message.type === 'LIST_ROOMS') {
       const newButton = this.createNewRoomButton();
       newButton.eventMode = 'dynamic';
@@ -42,6 +36,7 @@ export default class Rooms extends Scene {
 
       message.rooms.forEach((room, key) => {
         const button = this.createButtonRoom({
+          id: room.id,
           wave: room.wave,
           players: room.players.length,
           position: {
@@ -50,7 +45,6 @@ export default class Rooms extends Scene {
           }
         }); 
         this.container.addChild(button);
-       
       });
     }
   }
@@ -87,11 +81,17 @@ export default class Rooms extends Scene {
     return sprite;
   }
 
-  private createButtonRoom({ wave, players, position }: { wave: number; players: number; position: RawVector2 }) {
+  private createButtonRoom({ id, wave, players, position }: { id: number; wave: number; players: number; position: RawVector2 }) {
     const sprite = PIXI.Sprite.from('src/assets/button.png');
 
     sprite.eventMode = 'dynamic';
+
     sprite.on('click', () => {
+      this.webSocket.send(JSON.stringify({
+        type: 'JOIN_ROOM',
+        roomId: id,
+      }));
+      this.game.changeScene(Match);
     })
 
     sprite.position = position;

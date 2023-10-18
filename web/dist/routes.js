@@ -63,4 +63,8 @@ router.get('/login', _LoginController.login);
 router.get('/register', _UserController.register);
 router.post('/sessions', _SessionController.store);
 router.post('/users', _UserController.store);
+router.get('/users', _UserController.index);
+router.get('(.*)', (ctx)=>{
+    ctx.redirect('/login');
+});
 const _default = router;

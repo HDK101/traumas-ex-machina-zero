@@ -11,7 +11,7 @@ export default class Player {
   id: number;
   position: Vector2;
   velocity: Vector2;
-  life: number = 10;
+  life: number = 100;
 
   shooting: boolean = false;
 

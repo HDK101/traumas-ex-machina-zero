@@ -18,8 +18,6 @@ export async function store(ctx) {
 
     if (!user) throw new Error();
 
-    console.log(createKey());
-
     const session = await Session.create({
         publicKey: createKey(),
         privateKey: createKey(),
@@ -27,7 +25,9 @@ export async function store(ctx) {
 
     await user.addSession(session);
 
-    ctx.body = {
+    ctx.session = {
         publicKey: session.publicKey,
     }
+
+    ctx.redirect('/users');
 }

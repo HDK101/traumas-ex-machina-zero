@@ -89,13 +89,6 @@ export default class Match extends Scene {
     this.container.addChild(this.ammoText);
   }
 
-  onConnect() {
-    this.webSocket.send(JSON.stringify({
-      type: 'CREATE_ROOM',
-      // type: 'JOIN_ROOM',
-    }));
-  }
-
   onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data);
     const { projectiles, players, enemies, player, ammos, wave } = data;
@@ -119,12 +112,7 @@ export default class Match extends Scene {
     if (player.deathElapsedTime > 0) {
       this.showText('Game Over', 5);
     }
-    if (player.deathElapsedTime > 5) {
-      this.game.changeScene(Rooms);
-      return;
-    }
-
-    if (wave.finished) {
+    if (player.deathElapsedTime > 5 || wave.finished) {
       this.game.changeScene(Rooms);
       return;
     }
