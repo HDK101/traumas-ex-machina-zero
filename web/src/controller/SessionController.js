@@ -16,7 +16,10 @@ export async function store(ctx) {
         },
     });
 
-    if (!user) throw new Error();
+    if (!user) {
+        ctx.body = "Invalid credentials!";
+        return;
+    }
 
     const session = await Session.create({
         publicKey: createKey(),

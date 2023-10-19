@@ -10,7 +10,6 @@ export async function index(ctx) {
 }
 
 export async function store(ctx) {
-    console.log(ctx.request.body);
     await User.create(ctx.request.body);
 
     ctx.redirect('/login');

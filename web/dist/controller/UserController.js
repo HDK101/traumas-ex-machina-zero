@@ -33,7 +33,6 @@ async function index(ctx) {
     });
 }
 async function store(ctx) {
-    console.log(ctx.request.body);
     await _User.default.create(ctx.request.body);
     ctx.redirect('/login');
 }

@@ -27,7 +27,10 @@ async function store(ctx) {
             password
         }
     });
-    if (!user) throw new Error();
+    if (!user) {
+        ctx.body = "Invalid credentials!";
+        return;
+    }
     const session = await _Session.default.create({
         publicKey: createKey(),
         privateKey: createKey()
