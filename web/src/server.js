@@ -15,9 +15,7 @@ import retrievePrivateKey from './messageHandler/retrievePrivateKey';
 import Session from './model/Session';
 
 async function updateGameEnd(data) {
-  console.log(data);
   await Promise.all(data.gameEnds.map(async (gameEnd) => {
-    console.log(gameEnd.privateKey);
     const session = await Session.findOne({
       where: {
         privateKey: gameEnd.privateKey,
@@ -60,7 +58,6 @@ const wss = new WebSocketServer({
 wss.on('connection', (ws) => {
   ws.on('message', (rawData) => {
     const data = JSON.parse(rawData);
-    console.log(data);
     if (data.type === 'PRIVATE_KEY') {
       retrievePrivateKey(ws, data);
     }

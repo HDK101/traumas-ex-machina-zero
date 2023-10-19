@@ -25,7 +25,6 @@ export default class Waves {
     this._waveTime += deltaTime;
 
     if (this.currentWave.finished()) {
-      console.log('finished');
       this.next();
     }
   }

@@ -17,7 +17,6 @@ class Waves {
         this.currentWave.update(deltaTime);
         this._waveTime += deltaTime;
         if (this.currentWave.finished()) {
-            console.log('finished');
             this.next();
         }
     }

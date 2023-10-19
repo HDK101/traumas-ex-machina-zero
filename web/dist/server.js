@@ -21,9 +21,7 @@ function _interop_require_default(obj) {
     };
 }
 async function updateGameEnd(data) {
-    console.log(data);
     await Promise.all(data.gameEnds.map(async (gameEnd)=>{
-        console.log(gameEnd.privateKey);
         const session = await _Session.default.findOne({
             where: {
                 privateKey: gameEnd.privateKey
@@ -63,7 +61,6 @@ const wss = new _ws.WebSocketServer({
 wss.on('connection', (ws)=>{
     ws.on('message', (rawData)=>{
         const data = JSON.parse(rawData);
-        console.log(data);
         if (data.type === 'PRIVATE_KEY') {
             (0, _retrievePrivateKey.default)(ws, data);
         } else if (data.type === 'GAME_END') {

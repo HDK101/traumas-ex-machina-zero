@@ -46,8 +46,6 @@
         context.fillRect(0, 0, mainCanvas.width, mainCanvas.height);
         const { x, y, projectiles, players } = JSON.parse(event.data);
 
-        console.log(players);
-
         if (projectiles) {
           projectiles.forEach(p => {
             context.beginPath();

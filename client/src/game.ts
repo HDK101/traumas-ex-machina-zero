@@ -59,8 +59,6 @@ export default class Game {
   onMessage(event: MessageEvent) {
     const data = JSON.parse(event.data);
 
-    console.log(data);
-
     this.currentScene.onMessage(event);
   }
 
