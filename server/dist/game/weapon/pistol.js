@@ -13,7 +13,8 @@ class Pistol extends Weapon {
             speed: 600,
             timeToExpire: 10,
             type: ProjectileType.PISTOL,
-            group: ProjectileGroup.PLAYER
+            group: ProjectileGroup.PLAYER,
+            onKill: this.onKill
         }));
     }
 }

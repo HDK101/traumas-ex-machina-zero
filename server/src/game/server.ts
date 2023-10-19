@@ -1,13 +1,14 @@
-import {WebSocketServer} from "ws";
+import WebSocket, {WebSocketServer} from "ws";
 import WebSocketClientHandler from "./handler.js";
 import Rooms from "./room/rooms.js";
 
 export default class Server {
   private readonly ONE_MILLISECOND = 1000;
+  private backendSocket: WebSocket;
 
   private currentPlayerId = 0;
 
-  private rooms: Rooms = new Rooms();
+  private rooms: Rooms;
 
   private oldPerformanceNow = 0;
   private performanceNow = 0;
@@ -34,6 +35,10 @@ export default class Server {
         threshold: 1024,
       },
     });
+
+    this.backendSocket = new WebSocket("ws://localhost:8080");
+
+    this.rooms = new Rooms(this.backendSocket);
 
     this.maxDeltaSum = this.ONE_MILLISECOND / ticksPerSecond;
 

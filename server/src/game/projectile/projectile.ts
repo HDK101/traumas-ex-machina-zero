@@ -1,3 +1,4 @@
+import Player from "../player/player";
 import Vector2 from "../vector2.js";
 
 export enum ProjectileType {
@@ -20,6 +21,7 @@ export interface ProjectileConstructor {
   timeToExpire: number;
   type: number;
   group: ProjectileGroup;
+  onKill?: () => void;
 }
 
 export default class Projectile {
@@ -31,6 +33,7 @@ export default class Projectile {
   type: ProjectileType;
   group: ProjectileGroup;
   queuedToDeleted: boolean = false;
+  onKill?: () => void;
 
   private timeToExpire = 0.0;
 
@@ -43,6 +46,7 @@ export default class Projectile {
     speed,
     type,
     group,
+    onKill,
   }: ProjectileConstructor) {
     this.radius = radius;
     this.damage = damage;
@@ -52,6 +56,7 @@ export default class Projectile {
     this.type = type;
     this.group = group;
     this.speed = speed;
+    this.onKill = onKill;
   }
 
   public update(deltaTime: number) {
@@ -64,7 +69,7 @@ export default class Projectile {
     };
   }
 
-  public queueToDelete(): void {
+  public hit(): void {
     this.queuedToDeleted = true;
   }
 

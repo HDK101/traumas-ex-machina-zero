@@ -34,6 +34,7 @@ async function store(ctx) {
     });
     await user.addSession(session);
     ctx.session = {
+        userId: user.id,
         publicKey: session.publicKey
     };
     ctx.redirect('/users');

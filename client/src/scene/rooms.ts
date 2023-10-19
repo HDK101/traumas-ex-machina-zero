@@ -26,6 +26,7 @@ export default class Rooms extends Scene {
 
       newButton.on('click', () => {
         this.webSocket.send(JSON.stringify({
+          privateKey: this.game.privateKey,
           type: 'CREATE_ROOM',
         }));
         this.game.changeScene(Match);
@@ -90,6 +91,7 @@ export default class Rooms extends Scene {
       this.webSocket.send(JSON.stringify({
         type: 'JOIN_ROOM',
         roomId: id,
+        privateKey: this.game.privateKey,
       }));
       this.game.changeScene(Match);
     })

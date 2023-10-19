@@ -57,6 +57,7 @@ class WebSocketClientHandler {
             const playerMessage = JSON.parse(message.toString());
             if (playerMessage.type === 'CREATE_ROOM') {
                 thisHandler.inRoom = thisHandler.rooms.create();
+                thisHandler.player.privateKey = playerMessage.privateKey;
                 thisHandler.inRoom.players.addPlayer(thisHandler.playerConnection);
             } else {
                 const handlerFunction = thisHandler.handlers.get(playerMessage.type);

@@ -31,7 +31,7 @@ class Projectile {
             expired: this.timeToExpire <= 0
         };
     }
-    queueToDelete() {
+    hit() {
         this.queuedToDeleted = true;
     }
     isQueuedToDelete() {
@@ -40,7 +40,7 @@ class Projectile {
     get squaredRadius() {
         return Math.pow(this.radius, 2);
     }
-    constructor({ radius, damage, position, velocity, timeToExpire, speed, type, group }){
+    constructor({ radius, damage, position, velocity, timeToExpire, speed, type, group, onKill }){
         _define_property(this, "radius", void 0);
         _define_property(this, "damage", void 0);
         _define_property(this, "position", void 0);
@@ -49,6 +49,7 @@ class Projectile {
         _define_property(this, "type", void 0);
         _define_property(this, "group", void 0);
         _define_property(this, "queuedToDeleted", false);
+        _define_property(this, "onKill", void 0);
         _define_property(this, "timeToExpire", 0.0);
         this.radius = radius;
         this.damage = damage;
@@ -58,6 +59,7 @@ class Projectile {
         this.type = type;
         this.group = group;
         this.speed = speed;
+        this.onKill = onKill;
     }
 }
 export { Projectile as default };

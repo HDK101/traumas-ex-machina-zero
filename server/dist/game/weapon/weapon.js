@@ -42,15 +42,17 @@ class Weapon {
     set projectiles(value) {
         this._projectiles = value;
     }
-    constructor({ maxAmmo }){
+    constructor({ maxAmmo, onKill }){
+        _define_property(this, "maxAmmo", void 0);
         _define_property(this, "position", void 0);
         _define_property(this, "target", void 0);
+        _define_property(this, "onKill", void 0);
         _define_property(this, "_ammo", void 0);
         _define_property(this, "_projectiles", void 0);
         _define_property(this, "currentTime", 0.0);
-        _define_property(this, "maxAmmo", void 0);
         this._ammo = maxAmmo;
         this.maxAmmo = maxAmmo;
+        this.onKill = onKill;
         this.position = Vector2.zero();
         this.target = Vector2.zero();
     }

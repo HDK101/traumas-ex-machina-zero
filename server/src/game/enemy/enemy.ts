@@ -43,9 +43,12 @@ export default abstract class Enemy {
   public damage(value: number) {
     this.currentLife -= value;
 
-    if (this.currentLife <= 0) {
+    const dead = this.currentLife <= 0;
+    if (dead) {
       this.onDeath();
     }
+
+    return dead;
   }
 
   public onDeath() {

@@ -14,10 +14,29 @@ require("./database/database");
 require("./database/association");
 require("./database/sync");
 const _retrievePrivateKey = /*#__PURE__*/ _interop_require_default(require("./messageHandler/retrievePrivateKey"));
+const _Session = /*#__PURE__*/ _interop_require_default(require("./model/Session"));
 function _interop_require_default(obj) {
     return obj && obj.__esModule ? obj : {
         default: obj
     };
+}
+async function updateGameEnd(data) {
+    console.log(data);
+    await Promise.all(data.gameEnds.map(async (gameEnd)=>{
+        console.log(gameEnd.privateKey);
+        const session = await _Session.default.findOne({
+            where: {
+                privateKey: gameEnd.privateKey
+            },
+            include: [
+                'User'
+            ]
+        });
+        const user = session.User;
+        user.enemiesKilled += gameEnd.enemiesKilled;
+        user.maxScore = gameEnd.score;
+        await user.save();
+    }));
 }
 const app = new _koa.default();
 const wss = new _ws.WebSocketServer({
@@ -42,8 +61,14 @@ const wss = new _ws.WebSocketServer({
     }
 });
 wss.on('connection', (ws)=>{
-    ws.on('message', (data)=>{
-        (0, _retrievePrivateKey.default)(ws, JSON.parse(data.toString()));
+    ws.on('message', (rawData)=>{
+        const data = JSON.parse(rawData);
+        console.log(data);
+        if (data.type === 'PRIVATE_KEY') {
+            (0, _retrievePrivateKey.default)(ws, data);
+        } else if (data.type === 'GAME_END') {
+            updateGameEnd(data);
+        }
     });
 });
 app.keys = [

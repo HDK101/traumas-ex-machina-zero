@@ -16,6 +16,7 @@ export default class Pistol extends Weapon {
       timeToExpire: 10,
       type: ProjectileType.PISTOL,
       group: ProjectileGroup.PLAYER,
+      onKill: this.onKill,
     }));
   }
 }

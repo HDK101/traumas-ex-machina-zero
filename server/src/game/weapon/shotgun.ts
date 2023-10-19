@@ -45,6 +45,7 @@ export default class Shotgun extends Weapon {
       timeToExpire: 10,
       type: ProjectileType.SHOTGUN,
       group: ProjectileGroup.PLAYER,
+      onKill: this.onKill,
     }));
 
     this.projectiles.create(new Projectile({
@@ -56,6 +57,7 @@ export default class Shotgun extends Weapon {
       timeToExpire: 10,
       type: ProjectileType.SHOTGUN,
       group: ProjectileGroup.PLAYER,
+      onKill: this.onKill,
     }));
 
     this.projectiles.create(new Projectile({
@@ -67,6 +69,7 @@ export default class Shotgun extends Weapon {
       timeToExpire: 10,
       type: ProjectileType.SHOTGUN,
       group: ProjectileGroup.PLAYER,
+      onKill: this.onKill,
     }));
   }
 }

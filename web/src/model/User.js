@@ -7,6 +7,14 @@ const User = sequelize.define('User', {
         type: DataTypes.STRING,
         unique: true,
     },
+    maxScore: { 
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+    },
+    enemiesKilled: { 
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+    },
     password: DataTypes.STRING,
 });
 

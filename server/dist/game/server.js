@@ -11,7 +11,7 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
-import { WebSocketServer } from "ws";
+import WebSocket, { WebSocketServer } from "ws";
 import WebSocketClientHandler from "./handler.js";
 import Rooms from "./room/rooms.js";
 class Server {
@@ -30,6 +30,7 @@ class Server {
     constructor(ticksPerSecond = 60){
         _define_property(this, "ticksPerSecond", void 0);
         _define_property(this, "ONE_MILLISECOND", void 0);
+        _define_property(this, "backendSocket", void 0);
         _define_property(this, "currentPlayerId", void 0);
         _define_property(this, "rooms", void 0);
         _define_property(this, "oldPerformanceNow", void 0);
@@ -39,7 +40,6 @@ class Server {
         this.ticksPerSecond = ticksPerSecond;
         this.ONE_MILLISECOND = 1000;
         this.currentPlayerId = 0;
-        this.rooms = new Rooms();
         this.oldPerformanceNow = 0;
         this.performanceNow = 0;
         this.deltaSum = 0;
@@ -61,6 +61,8 @@ class Server {
                 threshold: 1024
             }
         });
+        this.backendSocket = new WebSocket("ws://localhost:8080");
+        this.rooms = new Rooms(this.backendSocket);
         this.maxDeltaSum = this.ONE_MILLISECOND / ticksPerSecond;
         wss.on("connection", (socket, request)=>{
             this.currentPlayerId += 1;

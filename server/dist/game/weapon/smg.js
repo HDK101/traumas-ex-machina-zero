@@ -13,7 +13,8 @@ class SMG extends Weapon {
             speed: 600,
             timeToExpire: 10,
             type: ProjectileType.SMG,
-            group: ProjectileGroup.PLAYER
+            group: ProjectileGroup.PLAYER,
+            onKill: this.onKill
         }));
     }
 }

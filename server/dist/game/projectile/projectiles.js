@@ -45,12 +45,15 @@ class Projectiles {
     checkCollisionPlayers(projectile) {
         const playersInRange = this.getPlayers().filter((player)=>player.position.squareDistance(projectile.position) <= Math.pow(projectile.radius + player.radius, 2));
         playersInRange.forEach((player)=>player.damage(projectile.damage));
-        if (playersInRange.length > 0) projectile.queueToDelete();
+        if (playersInRange.length > 0) projectile.hit();
     }
     checkCollisionEnemies(projectile) {
         const enemiesInRange = this.getEnemies().filter((enemy)=>enemy.position.squareDistance(projectile.position) <= Math.pow(projectile.radius + enemy.radius, 2)).filter((enemy)=>!enemy.isDead);
-        enemiesInRange.forEach((enemy)=>enemy.damage(projectile.damage));
-        if (enemiesInRange.length > 0) projectile.queueToDelete();
+        enemiesInRange.forEach((enemy)=>{
+            const dead = enemy.damage(projectile.damage);
+            if (dead && projectile.onKill) projectile.onKill();
+        });
+        if (enemiesInRange.length > 0) projectile.hit();
     }
     constructor(){
         _define_property(this, "pool", new Map());

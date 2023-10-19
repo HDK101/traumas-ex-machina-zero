@@ -32,12 +32,22 @@ class Rooms {
             ...this.rooms.entries()
         ].forEach(([key, room])=>{
             const finished = room.tick(deltaTime);
-            if (finished) this.rooms.delete(key);
+            if (finished) {
+                const formattedGameEnds = room.players.all.map((player)=>player.formattedGameEnd());
+                this.backendWebSocket.send(JSON.stringify({
+                    type: 'GAME_END',
+                    gameEnds: formattedGameEnds
+                }));
+                this.rooms.delete(key);
+            }
         });
     }
-    constructor(){
+    constructor(backendWebSocket){
+        _define_property(this, "backendWebSocket", void 0);
         _define_property(this, "rooms", void 0);
-        _define_property(this, "currentRoomId", 0);
+        _define_property(this, "currentRoomId", void 0);
+        this.backendWebSocket = backendWebSocket;
+        this.currentRoomId = 0;
         this.rooms = new Map();
     }
 }

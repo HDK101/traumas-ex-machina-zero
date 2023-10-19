@@ -70,14 +70,17 @@ export default class Projectiles {
 
     playersInRange.forEach(player => player.damage(projectile.damage));
     
-    if (playersInRange.length > 0) projectile.queueToDelete();
+    if (playersInRange.length > 0) projectile.hit();
   }
 
   private checkCollisionEnemies(projectile: Projectile) {
     const enemiesInRange = this.getEnemies().filter(enemy => enemy.position.squareDistance(projectile.position) <= Math.pow(projectile.radius + enemy.radius, 2)).filter(enemy => !enemy.isDead);
 
-    enemiesInRange.forEach(enemy => enemy.damage(projectile.damage));
+    enemiesInRange.forEach(enemy => { 
+      const dead = enemy.damage(projectile.damage);
+      if (dead && projectile.onKill) projectile.onKill();
+    });
 
-    if (enemiesInRange.length > 0) projectile.queueToDelete();
+    if (enemiesInRange.length > 0) projectile.hit();
   }
 }

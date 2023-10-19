@@ -12,4 +12,5 @@ export interface PlayerMessage {
   roomId: number;
   weaponId: number;
   mousePosition: RawVector2;
+  privateKey: string;
 }

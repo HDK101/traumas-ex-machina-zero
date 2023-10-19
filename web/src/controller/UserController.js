@@ -1,8 +1,11 @@
 import User from "../model/User";
 
-export function index(ctx) {
+export async function index(ctx) {
+    const user = await User.findByPk(ctx.session.userId);
+
     return ctx.render('user', {
         publicKey: ctx.session.publicKey,
+        user,
     });
 }
 

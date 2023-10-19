@@ -4,6 +4,7 @@ import {MessageHandler} from "./MessageHandler";
 
 function joinRoom(webSocketClientHandler: WebSocketClientHandler) {
   return (playerMessage: PlayerMessage) => {
+    webSocketClientHandler.player.privateKey = playerMessage.privateKey;
     webSocketClientHandler.enterRoomById(playerMessage.roomId);
   };
 }

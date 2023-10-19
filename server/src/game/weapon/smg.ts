@@ -16,6 +16,7 @@ export default class SMG extends Weapon {
       timeToExpire: 10,
       type: ProjectileType.SMG,
       group: ProjectileGroup.PLAYER,
+      onKill: this.onKill,
     }));
   }
 }

@@ -13,6 +13,7 @@ export default class WebSocketClientHandler {
   private inRoom?: Room | null;
   private handlers: Map<string, HandlerFunction> = new Map();
 
+
   constructor(
     private readonly playerId: number, 
     private readonly webSocket: WebSocket, 
@@ -44,6 +45,7 @@ export default class WebSocketClientHandler {
 
       if (playerMessage.type === 'CREATE_ROOM') {
         thisHandler.inRoom = thisHandler.rooms.create();
+        thisHandler.player.privateKey = playerMessage.privateKey;
         thisHandler.inRoom.players.addPlayer(thisHandler.playerConnection);
       }
       else { 

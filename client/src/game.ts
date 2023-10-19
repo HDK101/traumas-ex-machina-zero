@@ -4,11 +4,12 @@ import Rooms from './scene/rooms';
 import Scene from './scene/scene';
 
 export default class Game {
+  public privateKey!: string;
+
   private app: PIXI.Application;
   private webSocket: WebSocket;
   private backendWebSocket!: WebSocket;
   private currentScene!: Scene;
-  private privateKey!: string;
 
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
     this.app = app;
@@ -18,9 +19,8 @@ export default class Game {
     this.backendWebSocket.addEventListener("open", event => {
       const urlParams = new URLSearchParams(window.location.search);
 
-      console.log(urlParams.get('publicKey'));
-
       this.backendWebSocket.send(JSON.stringify({
+        type: 'PRIVATE_KEY',
         publicKey: urlParams.get('publicKey'),
       }));
 

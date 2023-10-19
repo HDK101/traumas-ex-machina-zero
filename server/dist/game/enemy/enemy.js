@@ -23,9 +23,11 @@ class Enemy {
     }
     damage(value) {
         this.currentLife -= value;
-        if (this.currentLife <= 0) {
+        const dead = this.currentLife <= 0;
+        if (dead) {
             this.onDeath();
         }
+        return dead;
     }
     onDeath() {
         this.context.createAmmo(new Ammo(this.position.clone(), Math.floor(Math.random() * 3), Math.round(Math.random() * 10) * 5));

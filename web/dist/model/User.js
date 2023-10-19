@@ -21,6 +21,14 @@ const User = _database.default.define('User', {
         type: _sequelize.DataTypes.STRING,
         unique: true
     },
+    maxScore: {
+        type: _sequelize.DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    enemiesKilled: {
+        type: _sequelize.DataTypes.INTEGER,
+        defaultValue: 0
+    },
     password: _sequelize.DataTypes.STRING
 });
 const _default = User;

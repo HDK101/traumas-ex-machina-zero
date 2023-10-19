@@ -1,10 +1,11 @@
+import WebSocket from "ws";
 import Room from "./room.js";
 
 export default class Rooms {
   private rooms: Map<number, Room>;
   private currentRoomId = 0;
 
-  constructor() {
+  constructor(private readonly backendWebSocket: WebSocket) {
     this.rooms = new Map();
   }
 
@@ -33,8 +34,14 @@ export default class Rooms {
   update(deltaTime: number) {
     [...this.rooms.entries()].forEach(([key, room]) => { 
       const finished = room.tick(deltaTime);
-      if (finished)
+      if (finished) {
+        const formattedGameEnds = room.players.all.map(player => player.formattedGameEnd());
+        this.backendWebSocket.send(JSON.stringify({
+          type: 'GAME_END',
+          gameEnds: formattedGameEnds,
+        }));
         this.rooms.delete(key);
+      }
     });
   }
 }

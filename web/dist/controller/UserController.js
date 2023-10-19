@@ -25,9 +25,11 @@ function _interop_require_default(obj) {
         default: obj
     };
 }
-function index(ctx) {
+async function index(ctx) {
+    const user = await _User.default.findByPk(ctx.session.userId);
     return ctx.render('user', {
-        publicKey: ctx.session.publicKey
+        publicKey: ctx.session.publicKey,
+        user
     });
 }
 async function store(ctx) {

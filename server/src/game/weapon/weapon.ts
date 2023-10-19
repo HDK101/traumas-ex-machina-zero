@@ -1,8 +1,10 @@
+import Player from "../player/player.js";
 import Projectiles from "../projectile/projectiles.js";
 import Vector2 from "../vector2.js";
 
 export interface WeaponConstructor {
-  maxAmmo: number
+  maxAmmo: number;
+  onKill: () => void;
 }
 
 export interface ShootParam {
@@ -11,21 +13,25 @@ export interface ShootParam {
 }
 
 export default abstract class Weapon {
+  public readonly maxAmmo: number;
+
   protected position: Vector2;
   protected target: Vector2;
+
+  protected onKill: () => void;
 
   private _ammo: number;
   private _projectiles!: Projectiles;
 
   private currentTime: number = 0.0;
 
-  public readonly maxAmmo: number;
-
   constructor({
     maxAmmo,
+    onKill,
   }: WeaponConstructor) {
     this._ammo = maxAmmo;
     this.maxAmmo = maxAmmo;
+    this.onKill = onKill;
     this.position = Vector2.zero();
     this.target = Vector2.zero();
   }

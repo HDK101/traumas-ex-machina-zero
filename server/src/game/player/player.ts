@@ -19,6 +19,8 @@ export default class Player {
 
   _projectiles!: Projectiles;
 
+  _privateKey!: string;
+
   readonly speed: number = 300;
   readonly radius: number = 32;
 
@@ -33,6 +35,9 @@ export default class Player {
 
   private weaponAssociation: { [key: number]: Weapon };
 
+  private enemiesKilled = 0;
+  private score = 0;
+
   constructor({
     id,
     position,
@@ -40,18 +45,26 @@ export default class Player {
     id: number;
     position: Vector2;
   }) {
+    const onKill = () => {
+      this.score += 50;
+      this.enemiesKilled += 1;
+    }
+
     this.id = id;
     this.position = position;
     this.velocity = Vector2.zero();
     this.pistol = new Pistol({
       maxAmmo: 50,
+      onKill,
     });
     this.smg = new SMG({
       maxAmmo: 200,
+      onKill,
     });
 
     this.shotgun = new Shotgun({
       maxAmmo: 50,
+      onKill,
     });
     this.selectedWeapon = this.pistol;
 
@@ -126,6 +139,14 @@ export default class Player {
     return this._deathElapsedTime;
   }
 
+  public get privateKey() {
+    return this._privateKey;
+  }
+
+  public set privateKey(value: string) {
+    this._privateKey = value;
+  }
+
   public changeWeapon(weaponId: number) {
     if (this.currentWeaponId == weaponId) return;
     this.currentWeaponId = weaponId;
@@ -141,6 +162,14 @@ export default class Player {
     this.life = 10;
     this._deathElapsedTime = 0;
     this.position = Vector2.zero();
+  }
+
+  public formattedGameEnd() {
+    return {
+      privateKey: this.privateKey,
+      enemiesKilled: this.enemiesKilled,
+      score: this.score,
+    }
   }
 }
 

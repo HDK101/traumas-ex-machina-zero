@@ -35,7 +35,8 @@ class Shotgun extends Weapon {
             speed: 800,
             timeToExpire: 10,
             type: ProjectileType.SHOTGUN,
-            group: ProjectileGroup.PLAYER
+            group: ProjectileGroup.PLAYER,
+            onKill: this.onKill
         }));
         this.projectiles.create(new Projectile({
             radius: 16,
@@ -45,7 +46,8 @@ class Shotgun extends Weapon {
             speed: 800,
             timeToExpire: 10,
             type: ProjectileType.SHOTGUN,
-            group: ProjectileGroup.PLAYER
+            group: ProjectileGroup.PLAYER,
+            onKill: this.onKill
         }));
         this.projectiles.create(new Projectile({
             radius: 16,
@@ -55,7 +57,8 @@ class Shotgun extends Weapon {
             speed: 800,
             timeToExpire: 10,
             type: ProjectileType.SHOTGUN,
-            group: ProjectileGroup.PLAYER
+            group: ProjectileGroup.PLAYER,
+            onKill: this.onKill
         }));
     }
 }
