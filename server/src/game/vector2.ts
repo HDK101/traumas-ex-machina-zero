@@ -18,6 +18,14 @@ export default class Vector2 {
     return new Vector2(0, 0);
   }
 
+  clamp(min: Vector2, max: Vector2) {
+    this.x = this.x <= min.x ? min.x : this.x;
+    this.x = this.x >= max.x ? max.x : this.x;
+
+    this.y = this.y <= min.y ? min.y : this.y;
+    this.y = this.y >= max.y ? max.y : this.y;
+  }
+
   sum(vector: Vector2) {
     this.x += vector.x;
     this.y += vector.y;
@@ -32,7 +40,7 @@ export default class Vector2 {
     const deltaY = Math.pow(to.y - this.y, 2);
     return Math.sqrt(deltaX + deltaY);
   }
-
+ 
   direction(to: Vector2) {
     const calculatedDistance = this.distance(to);
     const rawDirection = Vector2.from(to.x - this.x, to.y - this.y);

@@ -11,6 +11,7 @@ function _define_property(obj, key, value) {
     }
     return obj;
 }
+import Room from "../room/room.js";
 import Vector2 from "../vector2.js";
 import Pistol from "../weapon/pistol.js";
 import Shotgun from "../weapon/shotgun.js";
@@ -33,6 +34,7 @@ class Player {
     }
     move(deltaTime) {
         this.position.sum(this.velocity.multiply(deltaTime));
+        this.position.clamp(Vector2.zero(), Vector2.from(Room.MAX_WIDTH, Room.MAX_HEIGHT));
     }
     damage(value) {
         this.life -= value;

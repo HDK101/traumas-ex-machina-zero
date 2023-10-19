@@ -1,5 +1,6 @@
 import Ammo from "../ammo/ammo.js";
 import Projectiles from "../projectile/projectiles.js";
+import Room from "../room/room.js";
 import Vector2 from "../vector2.js";
 import Pistol from "../weapon/pistol.js";
 import Shotgun from "../weapon/shotgun.js";
@@ -99,6 +100,7 @@ export default class Player {
 
   public move(deltaTime: number) {
     this.position.sum(this.velocity.multiply(deltaTime));
+    this.position.clamp(Vector2.zero(), Vector2.from(Room.MAX_WIDTH, Room.MAX_HEIGHT));
   }
 
   public damage(value: number) {

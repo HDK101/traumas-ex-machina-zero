@@ -21,6 +21,12 @@ class Vector2 {
     static zero() {
         return new Vector2(0, 0);
     }
+    clamp(min, max) {
+        this.x = this.x <= min.x ? min.x : this.x;
+        this.x = this.x >= max.x ? max.x : this.x;
+        this.y = this.y <= min.y ? min.y : this.y;
+        this.y = this.y >= max.y ? max.y : this.y;
+    }
     sum(vector) {
         this.x += vector.x;
         this.y += vector.y;
