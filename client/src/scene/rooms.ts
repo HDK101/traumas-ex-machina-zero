@@ -6,6 +6,8 @@ import Match from "./match";
 export default class Rooms extends Scene {
   private container!: PIXI.Container;
 
+  private timeToListRooms: number = 0.0;
+
   init() {
     this.container = new PIXI.Container();
 
@@ -18,13 +20,15 @@ export default class Rooms extends Scene {
     const message = JSON.parse(event.data);
 
     if (message.type === 'LIST_ROOMS') {
+      this.container.removeChildren();
+
       const newButton = this.createNewRoomButton();
       newButton.eventMode = 'dynamic';
 
       newButton.position.x = this.app.renderer.width / 2 - 100;
       newButton.position.y = 100;
 
-      newButton.on('click', () => {
+      newButton.on('mousedown', () => {
         this.webSocket.send(JSON.stringify({
           privateKey: this.game.privateKey,
           type: 'CREATE_ROOM',
@@ -35,7 +39,7 @@ export default class Rooms extends Scene {
 
       this.container.addChild(newButton);
 
-      message.rooms.forEach((room, key) => {
+      message.rooms.forEach((room: any, key: any) => {
         const button = this.createButtonRoom({
           id: room.id,
           wave: room.wave,
@@ -51,6 +55,14 @@ export default class Rooms extends Scene {
   }
 
   update(deltaTime: number) {
+    this.timeToListRooms += deltaTime;
+
+    if (this.timeToListRooms >= 5.0) {
+      this.webSocket.send(JSON.stringify({
+        type: 'LIST_ROOMS',
+      }));
+      this.timeToListRooms = 0.0;
+    }
   }
 
   draw() {
@@ -76,8 +88,9 @@ export default class Rooms extends Scene {
       fill: 'ffffff',
     });
     roomText.position = { x: 10, y: 40 };
+    roomText.eventMode = 'none';
 
-    sprite.addChild(roomText);
+    // sprite.addChild(roomText);
 
     return sprite;
   }
@@ -87,7 +100,7 @@ export default class Rooms extends Scene {
 
     sprite.eventMode = 'dynamic';
 
-    sprite.on('click', () => {
+    sprite.on('mousedown', () => {
       this.webSocket.send(JSON.stringify({
         type: 'JOIN_ROOM',
         roomId: id,

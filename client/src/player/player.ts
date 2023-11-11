@@ -16,6 +16,7 @@ export default class Player {
       angleOffset: (Math.PI / 3 + Math.PI / 4) / 2,
       pointWobbleIntensity: 5,
       camera,
+      color: 0xffffff,
     });
   }
 }

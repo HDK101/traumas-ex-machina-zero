@@ -33,6 +33,7 @@ export default class Enemies {
       angleOffset: (Math.PI / 3 + Math.PI / 4) / 2,
       pointWobbleIntensity: 5,
       camera: this.camera,
+      color: 0xff0000,
     });
     const enemy = new Enemy(polygon);
     this.stage.addChild(polygon.graphics);

@@ -12,6 +12,7 @@ export default class Game {
   private currentScene!: Scene;
 
   constructor({ webSocket, app }: { webSocket: WebSocket, app: PIXI.Application }) {
+    console.log(import.meta.env);
     this.app = app;
     this.webSocket = webSocket;
     this.backendWebSocket = new WebSocket('ws://localhost:8080');

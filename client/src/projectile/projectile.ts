@@ -32,6 +32,7 @@ export default class Projectile {
       points: 5,
       pointWobbleIntensity: 1,
       camera: this.camera,
+      color: 0xffffff,
     });
   }
 

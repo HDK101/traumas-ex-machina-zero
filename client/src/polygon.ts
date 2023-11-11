@@ -8,11 +8,13 @@ interface PolygonConstructor {
   angleOffset?: number;
   pointWobbleIntensity: number;
   camera: Camera;
+  color: number;
 }
 
 export default class Polygon {
   enabled: boolean = true;
   elapsedTime: number = 0;
+  color: number;
 
   radius: number;
   points: number;
@@ -30,11 +32,13 @@ export default class Polygon {
     points,
     pointWobbleIntensity,
     camera,
+    color,
     angleOffset = 0,
   }: PolygonConstructor) {
     this.position = Vector2.zero();
     this.radius = radius;
     this.points = points;
+    this.color = color;
     this.angleOffset = (Math.PI / 3 + Math.PI / 4) / 2 + angleOffset;
     this.pointWobbleIntensity = pointWobbleIntensity;
     this.graphics = new PIXI.Graphics();
@@ -61,7 +65,7 @@ export default class Polygon {
   render() {
     this.graphics.clear();
     if (!this.enabled) return;
-    this.graphics.lineStyle(5, 0xff0000);
+    this.graphics.lineStyle(5, this.color);
     this.graphics.drawPolygon(this.calculatedPoints);
   }
 }
